@@ -21,6 +21,15 @@ export default function TechnologyPage() {
         </div>
       </section>
 
+      {/* Architecture Overview Image */}
+      <section className="pb-12 bg-white">
+        <div className="section-container">
+          <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-100">
+            <img src="/image/微算产品架构图40829.png" alt="微算产品整体架构图" className="w-full object-contain" />
+          </div>
+        </div>
+      </section>
+
       {/* Architecture */}
       <section className="section-padding bg-white" id="separation">
         <div className="section-container">
@@ -32,7 +41,6 @@ export default function TechnologyPage() {
                 基于NVMe-oF协议实现计算与存储资源物理彻底解耦，RoCEv2高速互联消除TCP/IP拥塞瓶颈，
                 IPv6动态地址编码实现节点身份与地址一体化绑定，SDN智能调度实现全集群资源弹性调度。
               </p>
-
               <div className="space-y-6 mb-8">
                 {[
                   { title: 'NVMe-oF协议', desc: '计算与存储资源物理彻底解耦，独立扩展、独立维护' },
@@ -53,7 +61,6 @@ export default function TechnologyPage() {
                   </div>
                 ))}
               </div>
-
               <div className="grid grid-cols-3 gap-4">
                 {[
                   { value: '≤100μs', label: '交互延迟' },
@@ -67,26 +74,11 @@ export default function TechnologyPage() {
                 ))}
               </div>
             </div>
-
-            <div className="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-3xl p-8 text-white">
-              <div className="space-y-6">
-                <h3 className="text-2xl font-bold">架构优势</h3>
-                <div className="space-y-4">
-                  {[
-                    '计算与存储独立扩展，按需配置资源',
-                    '存储资源池化共享，利用率提升3倍',
-                    '热插拔增加节点，不中断业务运行',
-                    '集群带宽随节点数线性增长',
-                    '国内首创IPv6原生模块化架构',
-                  ].map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-white/90">{item}</span>
-                    </div>
-                  ))}
-                </div>
+            <div className="space-y-4">
+              <img src="/image/微算技术架构图1.png" alt="存算分离架构图" className="rounded-2xl shadow-lg w-full" loading="lazy" />
+              <div className="grid grid-cols-2 gap-4">
+                <img src="/image/微算技术架构图6.png" alt="网络架构" className="rounded-xl shadow-md w-full" loading="lazy" />
+                <img src="/image/微算技术架构图7.png" alt="存储架构" className="rounded-xl shadow-md w-full" loading="lazy" />
               </div>
             </div>
           </div>
@@ -105,7 +97,6 @@ export default function TechnologyPage() {
                 采用8+2 EC纠删码，仅需20%冗余即可实现高等级数据防护。
                 智能数据迁移实现颗粒磨损均衡，延长SSD寿命20%以上。
               </p>
-
               <div className="space-y-6 mb-8">
                 {[
                   { title: 'PCIe Gen5接口', desc: '无网关直连设计，从底层消除I/O性能瓶颈' },
@@ -125,7 +116,6 @@ export default function TechnologyPage() {
                   </div>
                 ))}
               </div>
-
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
                   { value: '≥100万', label: 'IOPS' },
@@ -140,24 +130,57 @@ export default function TechnologyPage() {
                 ))}
               </div>
             </div>
+            <div className="lg:order-1 space-y-4">
+              <img src="/image/微算技术架构图5.png" alt="EBOF全闪存储架构" className="rounded-2xl shadow-lg w-full" loading="lazy" />
+              <div className="grid grid-cols-2 gap-4">
+                <img src="/image/内部pcb图.jpg" alt="存储PCB电路板" className="rounded-xl shadow-md w-full" loading="lazy" />
+                <img src="/image/微算技术架构图8.jpg" alt="技术细节" className="rounded-xl shadow-md w-full" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="lg:order-1 bg-gradient-to-br from-indigo-600 to-purple-500 rounded-3xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-6">技术亮点</h3>
-              <div className="space-y-4">
-                {[
-                  '完全自主知识产权的全闪存储技术',
-                  'PCIe Gen5直连，无网关瓶颈',
-                  '纠删码冗余仅20%，远低于三副本的200%',
-                  '智能磨损均衡，延长SSD寿命',
-                  '国内90%以上GPU全兼容（华为昇腾+鲲鹏双认证）',
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-white/90">{item}</span>
-                  </div>
-                ))}
+      {/* Technical Architecture Gallery */}
+      <section className="section-padding bg-white" id="gallery">
+        <div className="section-container">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">ARCHITECTURE</p>
+            <h2 className="section-title text-gray-900">技术架构详解</h2>
+            <p className="section-subtitle">深入了解微算的系统架构与技术细节</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { src: '/image/微算技术架构图9.jpg', title: '集群网络拓扑' },
+              { src: '/image/微算技术架构图11.jpg', title: '数据流转架构' },
+              { src: '/image/微算技术架构图12.png', title: '存储层设计' },
+              { src: '/image/微算技术架构图13.png', title: '计算调度系统' },
+              { src: '/image/微算技术架构图14.png', title: '安全防护体系' },
+              { src: '/image/微算技术架构图15.png', title: '运维管理平台' },
+            ].map((item) => (
+              <div key={item.src} className="group rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-500">
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img src={item.src} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-gray-900 text-sm">{item.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 grid sm:grid-cols-2 gap-6">
+            <div className="rounded-2xl overflow-hidden border border-gray-100">
+              <img src="/image/胃酸架构图9.png" alt="系统架构全景" className="w-full" loading="lazy" />
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-900 text-sm">系统架构全景</h3>
+              </div>
+            </div>
+            <div className="rounded-2xl overflow-hidden border border-gray-100">
+              <img src="/image/微算技术架构图15.png" alt="部署架构" className="w-full" loading="lazy" />
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-900 text-sm">部署方案架构</h3>
               </div>
             </div>
           </div>
@@ -165,14 +188,13 @@ export default function TechnologyPage() {
       </section>
 
       {/* Fusion Benefits */}
-      <section className="section-padding bg-white" id="advantages">
+      <section className="section-padding bg-gray-50" id="advantages">
         <div className="section-container">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">ADVANTAGES</p>
             <h2 className="section-title text-gray-900">融合效益</h2>
             <p className="section-subtitle">两大技术的原生深度融合，实现全方位性能突破</p>
           </div>
-
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { value: '≥60%', label: '系统响应效率提升', desc: '高并发场景下系统整体响应效率大幅提升', color: 'bg-blue-50 text-blue-600' },
@@ -180,7 +202,7 @@ export default function TechnologyPage() {
               { value: '90%', label: '资源扩容周期缩短', desc: '从月级缩短到小时级，业务不中断扩容', color: 'bg-purple-50 text-purple-600' },
               { value: '0', label: '数据泄露风险', desc: '数据不出域，从架构层面消除泄露风险', color: 'bg-red-50 text-red-600' },
             ].map((item) => (
-              <div key={item.label} className="p-8 rounded-2xl border border-gray-100 hover:shadow-xl transition-shadow duration-500">
+              <div key={item.label} className="p-8 rounded-2xl border border-gray-100 bg-white hover:shadow-xl transition-shadow duration-500">
                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${item.color} mb-6`}>
                   <span className="text-lg font-bold">{item.value}</span>
                 </div>

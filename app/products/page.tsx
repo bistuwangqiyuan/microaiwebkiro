@@ -16,6 +16,7 @@ const products = [
     price: '约100万元',
     priceNote: '试点期免费赠送',
     color: 'from-blue-500 to-cyan-400',
+    image: '/image/微算产品图1.jpg',
     specs: [
       { label: '计算能力', value: '2×通用CPU + 可选GPU加速卡' },
       { label: '存储容量', value: '4×3.84TB NVMe SSD' },
@@ -33,9 +34,10 @@ const products = [
     tagline: '专业算力，卓越表现',
     description: '适用于中型AI训练与推理、工业边缘计算等场景。多节点集群架构，EBOF全闪存储提供极致性能。',
     price: '200-500万元',
-    priceNote: '',
+    priceNote: '最受欢迎',
     color: 'from-brand-600 to-indigo-500',
     featured: true,
+    image: '/image/微算产品图2.jpg',
     specs: [
       { label: '计算能力', value: '多CPU+多GPU节点集群' },
       { label: '存储容量', value: '16×3.84TB NVMe SSD，EBOF全闪存储' },
@@ -55,6 +57,7 @@ const products = [
     price: '500万元以上',
     priceNote: '定制方案',
     color: 'from-purple-600 to-pink-500',
+    image: '/image/微算产品图3.png',
     specs: [
       { label: '计算能力', value: '多节点异构集群，支持千卡规模' },
       { label: '存储容量', value: 'PB级分布式存储池' },
@@ -82,7 +85,6 @@ const compareItems = [
 export default function ProductsPage() {
   return (
     <>
-      {/* Hero */}
       <section className="pt-32 pb-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="section-container text-center">
           <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">PRODUCTS</p>
@@ -95,13 +97,8 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* Product Cards */}
       {products.map((product, index) => (
-        <section
-          key={product.id}
-          id={product.id}
-          className={`section-padding ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-        >
+        <section key={product.id} id={product.id} className={`section-padding ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
           <div className="section-container">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
@@ -112,7 +109,6 @@ export default function ProductsPage() {
                 <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">{product.name}</h2>
                 <p className="text-xl text-brand-600 font-medium mb-4">{product.tagline}</p>
                 <p className="text-gray-500 leading-relaxed mb-8">{product.description}</p>
-
                 <div className="space-y-4 mb-8">
                   {product.specs.map((spec) => (
                     <div key={spec.label} className="flex items-start gap-3">
@@ -126,31 +122,19 @@ export default function ProductsPage() {
                     </div>
                   ))}
                 </div>
-
                 <div className="flex items-center gap-4">
                   <Link href="/contact" className="btn-primary">获取报价</Link>
                   <span className="text-2xl font-bold text-gray-900">{product.price}</span>
                 </div>
               </div>
-
               <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
-                <div className={`aspect-square rounded-3xl bg-gradient-to-br ${product.color} p-0.5`}>
-                  <div className="w-full h-full rounded-3xl bg-white flex items-center justify-center">
-                    <div className="text-center p-8">
-                      <div className={`text-8xl font-black bg-clip-text text-transparent bg-gradient-to-br ${product.color} mb-4`}>
-                        {product.name.split('-')[1]}
-                      </div>
-                      <p className="text-xl font-bold text-gray-900">{product.name}</p>
-                      <p className="text-gray-500">{product.subtitle}</p>
-                      <div className="mt-6 flex flex-wrap gap-2 justify-center">
-                        {product.scenes.map((scene) => (
-                          <span key={scene} className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                            {scene}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                <div className="rounded-2xl overflow-hidden shadow-xl">
+                  <img src={product.image} alt={`${product.name} ${product.subtitle}`} className="w-full" loading="lazy" />
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                  {product.scenes.map((scene) => (
+                    <span key={scene} className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{scene}</span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -165,7 +149,6 @@ export default function ProductsPage() {
             <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">COMPARISON</p>
             <h2 className="section-title text-gray-900">产品规格对比</h2>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px]">
               <thead>
@@ -201,16 +184,13 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="section-padding bg-brand-950 text-white">
         <div className="section-container text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">找到适合您的微算产品</h2>
           <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
             我们的专家团队将根据您的实际需求，为您推荐最佳方案
           </p>
-          <Link href="/contact" className="btn-primary text-base px-10 py-4">
-            免费咨询
-          </Link>
+          <Link href="/contact" className="btn-primary text-base px-10 py-4">免费咨询</Link>
         </div>
       </section>
     </>

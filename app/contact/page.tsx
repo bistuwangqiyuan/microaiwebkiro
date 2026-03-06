@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import Image from 'next/image';
 
 const inquiryTypes = [
   { value: 'product', label: '产品咨询' },
@@ -46,7 +47,8 @@ export default function ContactPage() {
                   {[
                     {
                       label: '电子邮件',
-                      value: 'contact@wecalc.com',
+                      value: '13426086861@139.com',
+                      href: 'mailto:13426086861@139.com',
                       icon: (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -55,7 +57,8 @@ export default function ContactPage() {
                     },
                     {
                       label: '联系电话',
-                      value: '+86 400-XXX-XXXX',
+                      value: '134-2608-6861',
+                      href: 'tel:13426086861',
                       icon: (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
@@ -64,7 +67,7 @@ export default function ContactPage() {
                     },
                     {
                       label: '公司地址',
-                      value: '中国 北京市 朝阳区',
+                      value: '中国 北京市',
                       icon: (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -88,11 +91,28 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">{info.label}</p>
-                        <p className="font-medium text-gray-900">{info.value}</p>
+                        {'href' in info && info.href ? (
+                          <a href={info.href} className="font-medium text-gray-900 hover:text-brand-600 transition-colors">{info.value}</a>
+                        ) : (
+                          <p className="font-medium text-gray-900">{info.value}</p>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* WeChat QR Code */}
+              <div className="p-6 bg-gray-50 rounded-2xl text-center">
+                <h3 className="font-bold text-gray-900 mb-3">微信联系</h3>
+                <p className="text-sm text-gray-500 mb-4">扫描二维码添加微信，获取更多信息</p>
+                <Image
+                  src="/image/微信联系二维码.png"
+                  alt="微算科技微信联系二维码"
+                  width={180}
+                  height={180}
+                  className="rounded-xl mx-auto"
+                />
               </div>
 
               <div className="p-6 bg-brand-50 rounded-2xl">
@@ -115,109 +135,45 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">提交成功！</h3>
                   <p className="text-gray-500 mb-8">我们会在1-2个工作日内与您联系</p>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="btn-secondary"
-                  >
-                    继续提交
-                  </button>
+                  <button onClick={() => setSubmitted(false)} className="btn-secondary">继续提交</button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="bg-gray-50 rounded-3xl p-8 md:p-10">
                   <h2 className="text-2xl font-bold text-gray-900 mb-8">在线咨询</h2>
-
                   <div className="grid sm:grid-cols-2 gap-6 mb-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        姓名 <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm"
-                        placeholder="请输入您的姓名"
-                      />
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">姓名 <span className="text-red-500">*</span></label>
+                      <input type="text" id="name" name="name" required className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的姓名" />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        邮箱 <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm"
-                        placeholder="请输入您的邮箱"
-                      />
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">邮箱 <span className="text-red-500">*</span></label>
+                      <input type="email" id="email" name="email" required className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的邮箱" />
                     </div>
                   </div>
-
                   <div className="grid sm:grid-cols-2 gap-6 mb-6">
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                        电话
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm"
-                        placeholder="请输入您的联系电话"
-                      />
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">电话</label>
+                      <input type="tel" id="phone" name="phone" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的联系电话" />
                     </div>
                     <div>
-                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                        公司
-                      </label>
-                      <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm"
-                        placeholder="请输入您的公司名称"
-                      />
+                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">公司</label>
+                      <input type="text" id="company" name="company" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的公司名称" />
                     </div>
                   </div>
-
                   <div className="mb-6">
-                    <label htmlFor="inquiry_type" className="block text-sm font-medium text-gray-700 mb-2">
-                      咨询类型 <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="inquiry_type"
-                      name="inquiry_type"
-                      required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm"
-                    >
+                    <label htmlFor="inquiry_type" className="block text-sm font-medium text-gray-700 mb-2">咨询类型 <span className="text-red-500">*</span></label>
+                    <select id="inquiry_type" name="inquiry_type" required className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm">
                       <option value="">请选择咨询类型</option>
                       {inquiryTypes.map((type) => (
                         <option key={type.value} value={type.value}>{type.label}</option>
                       ))}
                     </select>
                   </div>
-
                   <div className="mb-8">
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      留言内容 <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      required
-                      rows={5}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm resize-none"
-                      placeholder="请详细描述您的需求..."
-                    />
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">留言内容 <span className="text-red-500">*</span></label>
+                    <textarea id="message" name="message" required rows={5} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm resize-none" placeholder="请详细描述您的需求..." />
                   </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
+                  <button type="submit" disabled={loading} className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed">
                     {loading ? (
                       <>
                         <svg className="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
@@ -226,9 +182,7 @@ export default function ContactPage() {
                         </svg>
                         提交中...
                       </>
-                    ) : (
-                      '提交咨询'
-                    )}
+                    ) : '提交咨询'}
                   </button>
                 </form>
               )}

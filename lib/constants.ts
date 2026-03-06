@@ -90,11 +90,12 @@ export const COMPANY_INFO = {
     zh: '微算科技',
     en: 'WeCalc Technology'
   },
-  email: 'contact@wecalc.com',
-  phone: '+86 400-XXX-XXXX',
+  email: '13426086861@139.com',
+  phone: '134-2608-6861',
+  wechat: '微信联系二维码',
   address: {
-    zh: '中国 北京市 朝阳区',
-    en: 'Chaoyang District, Beijing, China'
+    zh: '中国 北京市',
+    en: 'Beijing, China'
   }
 } as const;
 
