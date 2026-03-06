@@ -1,43 +1,146 @@
-# Next.js on Netlify Platform Starter
+# WeCalc Official Website (微算官方网站)
 
-[Live Demo](https://nextjs-platform-starter.netlify.app/)
+A high-end commercial website for WeCalc (微算), showcasing micro computing centers with data localization capabilities.
 
-A modern starter based on Next.js 16 (App Router), Tailwind, and [Netlify Core Primitives](https://docs.netlify.com/core/overview/#develop) (Edge Functions, Image CDN, Blob Store).
+## 🚀 Tech Stack
 
-In this site, Netlify Core Primitives are used both implictly for running Next.js features (e.g. Route Handlers, image optimization via `next/image`, and more) and also explicitly by the user code.
+- **Framework**: Next.js 16+ (App Router)
+- **Language**: TypeScript (Strict Mode)
+- **Styling**: Tailwind CSS v4+
+- **Deployment**: Netlify
+- **Database**: Neon PostgreSQL
+- **Authentication**: Netlify Identity
+- **ORM**: Prisma
+- **Internationalization**: next-intl (Chinese/English)
 
-Implicit usage means you're using any Next.js functionality and everything "just works" when deployed - all the plumbing is done for you. Explicit usage is framework-agnostic and typically provides more features than what Next.js exposes.
-
-## Deploying to Netlify
-
-Click the button below to deploy this template to your Netlify account.
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/next-platform-starter)
-
-## Developing Locally
-
-1. Clone this repository, then run `npm install` in its root directory.
-
-2. For the starter to have full functionality locally (e.g. edge functions, blob store), please ensure you have an up-to-date version of Netlify CLI. Run:
+## 📁 Project Structure
 
 ```
-npm install netlify-cli@latest -g
+.
+├── app/                    # Next.js App Router pages
+├── components/
+│   ├── ui/                # Reusable UI components (Button, Input, Modal, etc.)
+│   ├── layout/            # Layout components (Header, Footer, etc.)
+│   └── features/          # Feature-specific components (AIChat, FeedbackForm, etc.)
+├── lib/                   # Utility functions and shared logic
+├── types/                 # TypeScript type definitions
+├── styles/                # Global styles and Tailwind configuration
+├── public/                # Static assets (images, fonts, etc.)
+├── netlify/
+│   └── functions/         # Netlify Functions (API endpoints)
+└── prisma/                # Database schema and migrations
+
 ```
 
-3. Link your local repository to the deployed Netlify site. This will ensure you're using the same runtime version for both local development and your deployed site.
+## 🛠️ Development
 
-```
-netlify link
-```
+### Prerequisites
 
-4. Then, run the Next.js development server via Netlify CLI:
+- Node.js 18+ 
+- npm or yarn
+- Netlify CLI (optional, for local Functions testing)
 
-```
-netlify dev
-```
+### Getting Started
 
-If your browser doesn't navigate to the site automatically, visit [localhost:8888](http://localhost:8888).
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Resources
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Fill in the required environment variables.
 
-- Check out the [Next.js on Netlify docs](https://docs.netlify.com/frameworks/next-js/overview/)
+3. **Run development server**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+5. **Run linting**
+   ```bash
+   npm run lint
+   ```
+
+## 🌐 Features
+
+- ✅ Bilingual support (Chinese/English)
+- ✅ AI chatbot with multi-API fallback
+- ✅ User authentication (Netlify Identity)
+- ✅ Product catalog and comparison
+- ✅ News and blog system
+- ✅ User feedback system
+- ✅ Contact and partnership forms
+- ✅ SEO optimized (SSR/SSG)
+- ✅ Responsive design (desktop-first)
+- ✅ Accessibility compliant (WCAG AA)
+- ✅ Performance optimized (Lighthouse >90)
+
+## 📝 Key Pages
+
+- **Home** (`/`): Hero section, product overview, core technology
+- **Products** (`/products`): Product catalog and comparison
+- **Technology** (`/technology`): Technical architecture and innovations
+- **Solutions** (`/solutions`): Industry-specific solutions
+- **About** (`/about`): Company information and team
+- **Partnership** (`/partnership`): Partnership program and application
+- **News** (`/news`): Company news and industry insights
+- **Contact** (`/contact`): Contact form and information
+- **Feedback** (`/feedback`): User feedback system
+
+## 🔧 Configuration
+
+### TypeScript
+
+TypeScript is configured with strict mode enabled. See `tsconfig.json` for details.
+
+### Tailwind CSS
+
+Tailwind CSS v4 is configured with custom theme. See `styles/globals.css` for theme configuration.
+
+### ESLint & Prettier
+
+Code quality is enforced with ESLint and Prettier. Configuration files:
+- `.eslintrc.json`
+- `.prettierrc`
+
+## 🚢 Deployment
+
+The project is configured for automatic deployment on Netlify:
+
+1. Push to the `main` branch
+2. Netlify automatically builds and deploys
+3. Preview deployments are created for pull requests
+
+### Environment Variables
+
+Required environment variables for production:
+- `DATABASE_URL`: Neon PostgreSQL connection string
+- `NETLIFY_IDENTITY_URL`: Netlify Identity URL
+- AI API keys (DeepSeek, GLM, Moonshot, etc.)
+
+## 📚 Documentation
+
+- [Requirements Document](.kiro/specs/wecalc-official-website/requirements.md)
+- [Design Document](.kiro/specs/wecalc-official-website/design.md)
+- [Implementation Tasks](.kiro/specs/wecalc-official-website/tasks.md)
+
+## 🤝 Contributing
+
+This is a private commercial project. For internal development only.
+
+## 📄 License
+
+Proprietary - All rights reserved by WeCalc (微算)
+
+---
+
+**Version**: 0.1.0  
+**Status**: In Development

@@ -1,0 +1,11 @@
+@共享微算商业计划书.md @微算产品宣传册.md @微算科技创新计划项目申请书.md 按照md文件内容，严格按照spec工作流，开发微算官网。即开发微算官方网站，全面介绍微算，并且网站上有ai客服，用户可以随时咨询，并且能够帮用户导航到指定的网页。网站按照国际上最高端网站的标准开发；不要在乎消耗多少token，以开发最高端网站为根本目标。可参考苹果官网，一定要非常高大上。网站支持中文和英文。部署在netlify，数据库用的是netlify的内置的neon数据库，用户权限管理也基于netlify。所有技术栈都要用对seo最友好的技术。计划开发网页端（PC），app等其他形式都不需要。涉及用户登录/注册功能,登录注册功能均基于netlify实现 ，不需要支持第三方登录，但游客能使用所有功能。越简单越好，没有后端，后端全部由netlify实现。网站不包含后台管理系统，不需要也设计一套后台的详细模块。不需要包括广告位、品牌专区、商城、付费咨询等商业变现模块。 页面风格偏简洁明快。需要列出建议页面结构。不需审核机制。不需要自动推荐。数据已全部在netlify内部的neon数据库中。要有用户反馈系统，页面结构要包含所有商业网站的必须内容，开发为成熟的商业网站，网站完全免费，游客能使用所有功能。 目标是创建全球最最高端的商业官方网站，类似苹果官网。展示格式是表格形式。有完善的分类/筛选和排序功能，例如按来源、时间、关键词过滤数据。不需要后端，后端用netlify实现。不需要开发排期，不需要风险分析。用户反馈系统不支持文件上传。需要分页加载数据，数据页需要完善的排序和筛选。需加入ai客服和辅助功能，ai即能回答问题，也能帮用户找到指定页面。可选的ai的api_key如下：以下api若一个不通则自动启用另一个，应自动选择最快的api。
+deepseek_API_KEY = sk-6d326d3e272045868de050be8ddd698f
+GLM_API_KEY = 1cf8de9e31b94d6ba77786f706de2ce7.uQB9GXSVrj8ykogF
+MOONSHOT_API_KEY=sk-M2vL6A8EY9QhhdzdUodSi6jRZHp01fOFxhETQu3T1zTjuHyp
+TONGYI_API_KEY=sk-5354ea96c69b44ed96705e8e446f84f9
+TENGCENT_API_KEY=sk-9oEqzHR0V9725Bl2YTWyDzsJBDuQbiQqwXrysk0N991R6IKt
+SPARK_API_KEY=DdOqdySdMfPVdUPKleqG:oynXFFHutBcilZdqMvpK
+DOUBAO_API_KEY=414f57a5-bca0-4e05-bca2-bd6b066e8165
+ANTHROPIC_API_KEY=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
+GLM_API_KEY = 1cf8de9e31b94d6ba77786f706de2ce7.uQB9GXSVrj8ykogF
+gemini api key =AIzaSyB523dcmpFeTTiVdeepai api key=e77b709f-3558-42f3-b8f6-d2e257accfbc
