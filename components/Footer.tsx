@@ -5,9 +5,9 @@ const footerLinks = {
   products: {
     title: '产品中心',
     links: [
-      { name: '微算-B 基础版', href: '/products#basic' },
-      { name: '微算-P 专业版', href: '/products#professional' },
-      { name: '微算-E 企业版', href: '/products#enterprise' },
+      { name: '微算-B 基础版', href: '/products/wecalc-b' },
+      { name: '微算-P 专业版', href: '/products/wecalc-p' },
+      { name: '微算-E 企业版', href: '/products/wecalc-e' },
       { name: '产品对比', href: '/products#compare' },
     ],
   },
@@ -24,6 +24,7 @@ const footerLinks = {
     links: [
       { name: '公司介绍', href: '/about' },
       { name: '解决方案', href: '/solutions' },
+      { name: '降本案例', href: '/case-study' },
       { name: '新闻资讯', href: '/news' },
       { name: '事业合伙人', href: '/partnership' },
     ],

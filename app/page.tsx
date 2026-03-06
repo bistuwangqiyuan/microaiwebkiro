@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { coreProductFeatures, financingPlan, productCatalog, validationHighlights } from '@/lib/product-catalog';
 
 export const metadata: Metadata = {
   title: '微算科技 WeCalc — 数据不出域的微型算力中心',
@@ -13,42 +14,7 @@ const stats = [
   { value: '99.9999%', label: '数据可靠性' },
 ];
 
-const products = [
-  {
-    name: '微算-B',
-    subtitle: '基础版',
-    description: '小型AI推理、数据分析、教学实训的理想选择',
-    specs: ['2×通用CPU + 可选GPU', '4×3.84TB NVMe SSD', '可达8 PFLOPS', '25G/100G以太网'],
-    price: '约100万元',
-    highlight: '试点期免费赠送',
-    color: 'from-blue-500 to-cyan-400',
-    href: '/products#basic',
-    image: '/image/微算产品图1.jpg',
-  },
-  {
-    name: '微算-P',
-    subtitle: '专业版',
-    description: '中型AI训练与推理、工业边缘计算的专业之选',
-    specs: ['多CPU+多GPU节点集群', '16×3.84TB NVMe SSD', '可达12 PFLOPS', '100G RDMA智能网卡'],
-    price: '200-500万元',
-    highlight: '最受欢迎',
-    color: 'from-brand-600 to-indigo-500',
-    href: '/products#professional',
-    featured: true,
-    image: '/image/微算产品图2.jpg',
-  },
-  {
-    name: '微算-E',
-    subtitle: '企业版',
-    description: '大规模模型训练、高性能计算的旗舰方案',
-    specs: ['多节点异构集群', 'PB级分布式存储池', '可达50+ PFLOPS', '200G/400G高速互联'],
-    price: '500万元以上',
-    highlight: '定制方案',
-    color: 'from-purple-600 to-pink-500',
-    href: '/products#enterprise',
-    image: '/image/微算产品图3.png',
-  },
-];
+const products = productCatalog;
 
 const techFeatures = [
   {
@@ -160,6 +126,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="section-padding bg-white">
+        <div className="section-container">
+          <div className="grid lg:grid-cols-[1.05fr,1.2fr] gap-12 items-start">
+            <div>
+              <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">PRODUCT OVERVIEW</p>
+              <h2 className="section-title text-gray-900">软硬件一体化的可扩展式微型算力中心</h2>
+              <p className="text-lg text-gray-500 leading-relaxed mt-6">
+                微算集计算、存储、管控功能于一体，遵循“最小可用、线性扩展、无限可能”的设计理念，
+                帮助企业从单台设备快速起步，再平滑演进到生产级集群。
+              </p>
+              <div className="mt-8 rounded-3xl bg-brand-950 text-white p-8 shadow-2xl shadow-brand-900/10">
+                <p className="text-sm font-semibold text-brand-300 mb-3">{financingPlan.badge}</p>
+                <h3 className="text-2xl font-bold mb-3">{financingPlan.title}</h3>
+                <p className="text-sm text-gray-300 leading-relaxed">{financingPlan.description}</p>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              {coreProductFeatures.map((feature) => (
+                <div key={feature.title} className="rounded-2xl border border-gray-100 bg-gray-50 p-6 card-hover">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Products Section */}
       <section className="section-padding bg-white" id="products">
         <div className="section-container">
@@ -205,7 +200,7 @@ export default function HomePage() {
                   </p>
 
                   <ul className="space-y-2.5 mb-8">
-                    {product.specs.map((spec) => (
+                    {product.quickSpecs.map((spec) => (
                       <li key={spec} className={`flex items-center gap-2.5 text-sm ${product.featured ? 'text-gray-300' : 'text-gray-600'}`}>
                         <svg className={`w-4 h-4 flex-shrink-0 ${product.featured ? 'text-brand-400' : 'text-brand-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -219,6 +214,7 @@ export default function HomePage() {
                     <div>
                       <p className="text-xs text-gray-400">参考价格</p>
                       <p className={`text-lg font-bold ${product.featured ? 'text-white' : 'text-gray-900'}`}>{product.price}</p>
+                      <p className={`text-xs mt-1 ${product.featured ? 'text-brand-200' : 'text-gray-500'}`}>{product.priceNote}</p>
                     </div>
                     <span className={`inline-flex items-center text-sm font-medium group-hover:translate-x-1 transition-transform
                       ${product.featured ? 'text-brand-300' : 'text-brand-600'}`}>
@@ -284,17 +280,20 @@ export default function HomePage() {
               <h2 className="section-title text-gray-900 mb-6">经过验证的卓越性能</h2>
               <p className="text-gray-500 mb-8">华为120万元同成本对标测试，全面超越传统方案</p>
               <div className="grid grid-cols-2 gap-6">
-                {[
-                  { metric: '72%', label: '数据加载时间降低' },
-                  { metric: '64%', label: '吞吐量提升' },
-                  { metric: '64%', label: '内存占用降低' },
-                  { metric: '30%+', label: '三年总成本节省' },
-                ].map((item) => (
+                {validationHighlights.map((item) => (
                   <div key={item.label} className="text-center p-6 rounded-2xl bg-gradient-to-b from-gray-50 to-white border border-gray-100">
-                    <div className="text-3xl font-bold text-gray-900 mb-2">{item.metric}</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-2">{item.value}</div>
                     <div className="text-sm text-gray-500">{item.label}</div>
                   </div>
                 ))}
+              </div>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link href="/case-study" className="btn-secondary">
+                  查看降本案例
+                </Link>
+                <Link href="/contact" className="btn-outline">
+                  获取专属测算
+                </Link>
               </div>
             </div>
             <div className="relative">
@@ -329,10 +328,10 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { step: '01', title: '免费试点', description: '企业零成本获得微算设备，验证本地AI算力价值' },
-              { step: '02', title: '滚动建设', description: '试点成功后按需扩展，从单台到万台线性增长' },
-              { step: '03', title: '增值服务', description: '提供算力券、技术支持等增值服务，持续创造价值' },
-              { step: '04', title: '生态共建', description: '事业合伙人体系，零加盟费共享AI产业发展红利' },
+              { step: '01', title: '轻量启动', description: '通过试点部署或 2,000 元/月融资租赁方式，快速获得 1P 本地算力。' },
+              { step: '02', title: '本地交付', description: '48-72 小时完成交钥匙部署，数据留在本地设备中，更安全、更合规。' },
+              { step: '03', title: '线性扩展', description: '从单台微算到多节点集群，算力与存储按业务需求平滑增长。' },
+              { step: '04', title: '持续运营', description: '结合合伙人网络、运维支持和升级服务，形成长期可持续的算力体系。' },
             ].map((item) => (
               <div key={item.step} className="relative p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
                 <span className="text-5xl font-black text-white/5 absolute top-4 right-4">{item.step}</span>
@@ -424,7 +423,7 @@ export default function HomePage() {
             <p className="text-lg text-gray-500 mb-10 leading-relaxed">
               微算科技为您提供数据不出域的微型算力中心解决方案。
               <br />
-              启动费用仅需5,000元/月，无需一次性大额投入。
+              融资租赁模式下，启动费用仅 2,000 元/月，即可享 1P 算力。
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/contact" className="btn-primary text-base px-10 py-4">

@@ -75,7 +75,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">7. 联系方式</h2>
             <p>如对本隐私政策有任何疑问，请通过以下方式联系我们：</p>
-            <p className="mt-2">邮箱：13426086861@139.com</p>
+            <p className="mt-2">邮箱：contact@wecalc.com</p>
           </section>
         </div>
       </div>

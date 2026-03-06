@@ -118,8 +118,8 @@ export default function ContactPage() {
               <div className="p-6 bg-brand-50 rounded-2xl">
                 <h3 className="font-bold text-gray-900 mb-2">融资租赁</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  启动费用仅需 <span className="font-bold text-brand-600">5,000元/月</span>，
-                  无需一次性大额投入，即可享受本地化AI算力服务。
+                  融资租赁模式下，启动费用仅需 <span className="font-bold text-brand-600">2,000元/月</span>，
+                  即可享 1P 算力，相当于拥有约 4 万元的 ChatGPT Token 使用额度。
                 </p>
               </div>
             </div>

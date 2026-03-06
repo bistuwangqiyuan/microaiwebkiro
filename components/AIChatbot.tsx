@@ -70,8 +70,15 @@ export default function AIChatbot() {
         }),
       });
 
+      if (!res.ok) {
+        throw new Error(`AI chat request failed with ${res.status}`);
+      }
+
       const data = await res.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
+      const reply = typeof data.reply === 'string' && data.reply.trim()
+        ? data.reply
+        : '暂时没有获取到有效答复，您可以继续提问或前往联系页面咨询。[NAV:/contact|前往联系页面]';
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -162,9 +169,10 @@ export default function AIChatbot() {
                 <p className="text-xs text-gray-500 mb-4">有任何问题都可以问我哦~</p>
                 <div className="space-y-2">
                   {[
-                    '微算的产品有哪些？',
+                    '微算-B 适合什么场景？',
+                    '融资租赁模式怎么收费？',
+                    '微算降本案例怎么看？',
                     '什么是数据不出域？',
-                    '如何成为事业合伙人？',
                     '微算的核心技术是什么？',
                   ].map((q) => (
                     <button

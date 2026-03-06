@@ -1,86 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { coreProductFeatures, financingPlan, productCatalog, productComparison } from '@/lib/product-catalog';
 
 export const metadata: Metadata = {
   title: '产品中心',
-  description: '微算科技产品矩阵：微算-B基础版、微算-P专业版、微算-E企业版。从小型AI推理到大规模模型训练，覆盖全场景算力需求。',
+  description: '微算科技产品矩阵总览，覆盖微算-B、微算-P、微算-E 三大产品，从 1P 入门算力到企业级异构集群均可按需交付。',
 };
-
-const products = [
-  {
-    id: 'basic',
-    name: '微算-B',
-    subtitle: '基础版',
-    tagline: '轻量级算力，快速启航',
-    description: '适用于小型AI推理、数据分析、教学实训等场景。单台设备即可提供完整算力服务，48-72小时快速部署。',
-    price: '约100万元',
-    priceNote: '试点期免费赠送',
-    color: 'from-blue-500 to-cyan-400',
-    image: '/image/微算产品图1.jpg',
-    specs: [
-      { label: '计算能力', value: '2×通用CPU + 可选GPU加速卡' },
-      { label: '存储容量', value: '4×3.84TB NVMe SSD' },
-      { label: '网络接口', value: '25G/100G以太网接口' },
-      { label: '算力输出', value: '可达8 PFLOPS（配置GPU加速卡时）' },
-      { label: '部署周期', value: '48-72小时快速部署' },
-      { label: '扩展能力', value: '支持热插拔模块化扩展' },
-    ],
-    scenes: ['高校教学实训', '小型AI推理', '数据分析处理', '开发测试环境'],
-  },
-  {
-    id: 'professional',
-    name: '微算-P',
-    subtitle: '专业版',
-    tagline: '专业算力，卓越表现',
-    description: '适用于中型AI训练与推理、工业边缘计算等场景。多节点集群架构，EBOF全闪存储提供极致性能。',
-    price: '200-500万元',
-    priceNote: '最受欢迎',
-    color: 'from-brand-600 to-indigo-500',
-    featured: true,
-    image: '/image/微算产品图2.jpg',
-    specs: [
-      { label: '计算能力', value: '多CPU+多GPU节点集群' },
-      { label: '存储容量', value: '16×3.84TB NVMe SSD，EBOF全闪存储' },
-      { label: '网络接口', value: '100G RDMA智能网卡，RoCEv2互联' },
-      { label: '算力输出', value: '可达12 PFLOPS' },
-      { label: '部署周期', value: '48-72小时快速部署' },
-      { label: '扩展能力', value: '无缝扩展至百节点规模' },
-    ],
-    scenes: ['中型AI训练与推理', '工业边缘计算', '医疗影像分析', '智慧城市'],
-  },
-  {
-    id: 'enterprise',
-    name: '微算-E',
-    subtitle: '企业版',
-    tagline: '旗舰算力，无限可能',
-    description: '适用于大规模模型训练、高性能计算等场景。支持千卡规模异构集群，PB级分布式存储池。',
-    price: '500万元以上',
-    priceNote: '定制方案',
-    color: 'from-purple-600 to-pink-500',
-    image: '/image/微算产品图3.png',
-    specs: [
-      { label: '计算能力', value: '多节点异构集群，支持千卡规模' },
-      { label: '存储容量', value: 'PB级分布式存储池' },
-      { label: '网络接口', value: '200G/400G高速互联' },
-      { label: '算力输出', value: '可达50 PFLOPS及以上' },
-      { label: '部署周期', value: '根据规模定制' },
-      { label: '扩展能力', value: '线性扩展至万台规模' },
-    ],
-    scenes: ['大规模模型训练', '高性能计算HPC', '自动驾驶', '科学研究'],
-  },
-];
-
-const compareItems = [
-  { label: '计算能力', basic: '2×CPU + 可选GPU', pro: '多CPU+多GPU集群', enterprise: '千卡异构集群' },
-  { label: '存储容量', basic: '4×3.84TB NVMe', pro: '16×3.84TB EBOF', enterprise: 'PB级分布式存储' },
-  { label: '算力输出', basic: '≤8 PFLOPS', pro: '≤12 PFLOPS', enterprise: '≥50 PFLOPS' },
-  { label: '网络', basic: '25G/100G以太网', pro: '100G RDMA', enterprise: '200G/400G互联' },
-  { label: '部署周期', basic: '48-72小时', pro: '48-72小时', enterprise: '定制方案' },
-  { label: '可扩展性', basic: '热插拔扩展', pro: '百节点扩展', enterprise: '万台集群' },
-  { label: '国产化兼容', basic: '✓', pro: '✓', enterprise: '✓' },
-  { label: '数据不出域', basic: '✓', pro: '✓', enterprise: '✓' },
-  { label: '参考价格', basic: '约100万元', pro: '200-500万元', enterprise: '500万元以上' },
-];
 
 export default function ProductsPage() {
   return (
@@ -90,25 +15,33 @@ export default function ProductsPage() {
           <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">PRODUCTS</p>
           <h1 className="section-title text-gray-900 mb-4">产品中心</h1>
           <p className="section-subtitle">
-            从最小可用到线性扩展，从单台设备到万台集群
+            从 1P 入门算力到企业级异构集群
             <br className="hidden sm:block" />
-            微算为每一种规模的算力需求提供最优解决方案
+            微算为不同规模的本地 AI 需求提供统一架构、分级交付的产品方案
           </p>
         </div>
       </section>
 
-      {products.map((product, index) => (
+      {productCatalog.map((product, index) => (
         <section key={product.id} id={product.id} className={`section-padding ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
           <div className="section-container">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
                 <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6
                   ${product.featured ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'}`}>
-                  {product.priceNote || product.subtitle}
+                  {product.highlight}
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">{product.name}</h2>
+                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">{product.fullName}</h2>
                 <p className="text-xl text-brand-600 font-medium mb-4">{product.tagline}</p>
-                <p className="text-gray-500 leading-relaxed mb-8">{product.description}</p>
+                <p className="text-gray-500 leading-relaxed mb-8">{product.longDescription}</p>
+                <div className="grid sm:grid-cols-2 gap-4 mb-8">
+                  {product.metrics.map((metric) => (
+                    <div key={metric.label} className="rounded-2xl border border-gray-100 bg-gradient-to-b from-gray-50 to-white p-5">
+                      <div className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</div>
+                      <div className="text-sm text-gray-500">{metric.label}</div>
+                    </div>
+                  ))}
+                </div>
                 <div className="space-y-4 mb-8">
                   {product.specs.map((spec) => (
                     <div key={spec.label} className="flex items-start gap-3">
@@ -122,10 +55,12 @@ export default function ProductsPage() {
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-4">
-                  <Link href="/contact" className="btn-primary">获取报价</Link>
+                <div className="flex flex-wrap items-center gap-4">
+                  <Link href={product.href} className="btn-primary">查看详情</Link>
+                  <Link href="/contact" className="btn-secondary">获取方案</Link>
                   <span className="text-2xl font-bold text-gray-900">{product.price}</span>
                 </div>
+                <p className="text-sm text-gray-500 mt-4">{product.priceNote}</p>
               </div>
               <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
                 <div className="rounded-2xl overflow-hidden shadow-xl">
@@ -136,11 +71,49 @@ export default function ProductsPage() {
                     <span key={scene} className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{scene}</span>
                   ))}
                 </div>
+                <div className="mt-6 grid sm:grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-gray-100 bg-white p-5">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">核心价值</h3>
+                    <ul className="space-y-2">
+                      {product.benefits.slice(0, 2).map((benefit) => (
+                        <li key={benefit} className="text-sm text-gray-500 leading-relaxed">{benefit}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-2xl border border-gray-100 bg-white p-5">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">交付方式</h3>
+                    <ul className="space-y-2">
+                      {product.delivery.slice(0, 2).map((item) => (
+                        <li key={item} className="text-sm text-gray-500 leading-relaxed">{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
       ))}
+
+      <section className="section-padding bg-gray-50">
+        <div className="section-container">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">FEATURES</p>
+            <h2 className="section-title text-gray-900">新版宣传册核心特性</h2>
+            <p className="section-subtitle">
+              从开箱即用到模块化扩展，微算把算力中心的交付复杂度压缩到更适合企业落地的范围内
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+            {coreProductFeatures.map((feature) => (
+              <div key={feature.title} className="rounded-2xl bg-white border border-gray-100 p-6 card-hover">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Comparison Table */}
       <section className="section-padding bg-white" id="compare">
@@ -170,7 +143,7 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody>
-                {compareItems.map((item, i) => (
+                {productComparison.map((item, i) => (
                   <tr key={item.label} className={i % 2 === 0 ? 'bg-gray-50/50' : ''}>
                     <td className="py-4 px-6 text-sm font-medium text-gray-700">{item.label}</td>
                     <td className="py-4 px-6 text-center text-sm text-gray-600">{item.basic}</td>
@@ -180,6 +153,23 @@ export default function ProductsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding bg-gray-50">
+        <div className="section-container">
+          <div className="rounded-[2rem] bg-brand-950 text-white p-10 lg:p-12 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-950 via-brand-900 to-indigo-950 opacity-90" />
+            <div className="relative z-10 max-w-3xl">
+              <p className="text-sm font-semibold text-brand-300 tracking-widest uppercase mb-3">{financingPlan.badge}</p>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">{financingPlan.title}</h2>
+              <p className="text-lg text-gray-300 leading-relaxed mb-8">{financingPlan.description}</p>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/products/wecalc-b" className="btn-primary">查看微算-B详情</Link>
+                <Link href="/contact" className="btn-secondary">咨询融资租赁方案</Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -70,6 +70,7 @@ export const NAV_LINKS = [
   { key: 'products', href: '/products' },
   { key: 'technology', href: '/technology' },
   { key: 'solutions', href: '/solutions' },
+  { key: 'case-study', href: '/case-study' },
   { key: 'about', href: '/about' },
   { key: 'partnership', href: '/partnership' },
   { key: 'news', href: '/news' },
