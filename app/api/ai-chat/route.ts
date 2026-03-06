@@ -57,6 +57,8 @@ const PROVIDERS: APIProvider[] = [
   { name: 'GLM', url: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', model: 'glm-4-flash', keyEnv: 'GLM_API_KEY' },
   { name: 'Tencent', url: 'https://api.hunyuan.cloud.tencent.com/v1/chat/completions', model: 'hunyuan-lite', keyEnv: 'TENCENT_API_KEY' },
   { name: 'Spark', url: 'https://spark-api-open.xf.cn/v1/chat/completions', model: 'generalv3.5', keyEnv: 'SPARK_API_KEY' },
+  { name: 'Doubao', url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions', model: 'doubao-lite-32k', keyEnv: 'DOUBAO_API_KEY' },
+  { name: 'Gemini', url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', model: 'gemini-2.0-flash', keyEnv: 'GEMINI_API_KEY' },
 ];
 
 async function callProvider(provider: APIProvider, messages: ChatMessage[]): Promise<string> {

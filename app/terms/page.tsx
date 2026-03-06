@@ -64,7 +64,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">7. 联系方式</h2>
-            <p>如对本服务条款有任何疑问，请联系：contact@wecalc.com</p>
+            <p>如对本服务条款有任何疑问，请联系：13426086861@139.com</p>
           </section>
         </div>
       </div>
