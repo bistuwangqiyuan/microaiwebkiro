@@ -52,8 +52,8 @@ export default function AIChatbot() {
     }
   }, [open]);
 
-  async function handleSend() {
-    const trimmed = input.trim();
+  async function handleSend(directText?: string) {
+    const trimmed = (directText || input).trim();
     if (!trimmed || loading) return;
 
     const userMsg: Message = { role: 'user', content: trimmed };
@@ -169,7 +169,7 @@ export default function AIChatbot() {
                   ].map((q) => (
                     <button
                       key={q}
-                      onClick={() => { setInput(q); setTimeout(() => handleSend(), 0); }}
+                      onClick={() => handleSend(q)}
                       className="block w-full text-left px-3 py-2 text-xs text-gray-600 bg-gray-50 rounded-lg hover:bg-brand-50 hover:text-brand-600 transition-colors"
                     >
                       {q}
@@ -221,7 +221,7 @@ export default function AIChatbot() {
                 disabled={loading}
               />
               <button
-                onClick={handleSend}
+                onClick={() => handleSend()}
                 disabled={loading || !input.trim()}
                 className="w-10 h-10 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:bg-gray-300 text-white flex items-center justify-center transition-colors flex-shrink-0"
               >
