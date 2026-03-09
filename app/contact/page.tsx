@@ -1,29 +1,7 @@
-'use client';
-
-import { useState } from 'react';
-import type { FormEvent } from 'react';
 import Image from 'next/image';
-
-const inquiryTypes = [
-  { value: 'product', label: '产品咨询' },
-  { value: 'partnership', label: '合伙人申请' },
-  { value: 'technical', label: '技术支持' },
-  { value: 'sales', label: '商务合作' },
-  { value: 'other', label: '其他' },
-];
+import LeadCaptureForm from '@/components/sales/LeadCaptureForm';
 
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-    setSubmitted(true);
-  }
-
   return (
     <>
       <section className="pt-32 pb-20 bg-gradient-to-b from-gray-50 to-white">
@@ -31,7 +9,7 @@ export default function ContactPage() {
           <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">CONTACT</p>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-4">联系我们</h1>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-            无论是产品咨询、技术支持还是合作洽谈，我们随时为您服务
+            告诉我们您的业务场景、预算和上线时间，系统会先输出一版适合的微算建议摘要。
           </p>
         </div>
       </section>
@@ -39,7 +17,6 @@ export default function ContactPage() {
       <section className="pb-20 lg:pb-32 bg-white">
         <div className="section-container">
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
-            {/* Contact Info */}
             <div className="lg:col-span-2 space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">联系方式</h2>
@@ -102,7 +79,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* WeChat QR Code */}
               <div className="p-6 bg-gray-50 rounded-2xl text-center">
                 <h3 className="font-bold text-gray-900 mb-3">微信联系</h3>
                 <p className="text-sm text-gray-500 mb-4">扫描二维码添加微信，获取更多信息</p>
@@ -116,76 +92,34 @@ export default function ContactPage() {
               </div>
 
               <div className="p-6 bg-brand-50 rounded-2xl">
-                <h3 className="font-bold text-gray-900 mb-2">融资租赁</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <h3 className="font-bold text-gray-900 mb-2">融资租赁快速试点</h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
                   融资租赁模式下，启动费用仅需 <span className="font-bold text-brand-600">2,000元/月</span>，
                   即可享 1P 算力，相当于拥有约 4 万元的 ChatGPT Token 使用额度。
                 </p>
+                <a
+                  href="/contact?intent=leasing&product=wecalc-b"
+                  className="inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+                >
+                  直接提交融资需求
+                </a>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-gray-100 bg-white">
+                <h3 className="font-bold text-gray-900 mb-2">建议优先提交的信息</h3>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>行业和具体 AI 场景，例如影像推理、教学实训、AI 质检</li>
+                  <li>是否要求数据不出域，以及预计上线时间</li>
+                  <li>预算范围，是否接受融资租赁或试点启动</li>
+                </ul>
               </div>
             </div>
 
-            {/* Form */}
             <div className="lg:col-span-3">
-              {submitted ? (
-                <div className="text-center py-20 px-8 bg-gray-50 rounded-3xl">
-                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">提交成功！</h3>
-                  <p className="text-gray-500 mb-8">我们会在1-2个工作日内与您联系</p>
-                  <button onClick={() => setSubmitted(false)} className="btn-secondary">继续提交</button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="bg-gray-50 rounded-3xl p-8 md:p-10">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-8">在线咨询</h2>
-                  <div className="grid sm:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">姓名 <span className="text-red-500">*</span></label>
-                      <input type="text" id="name" name="name" required className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的姓名" />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">邮箱 <span className="text-red-500">*</span></label>
-                      <input type="email" id="email" name="email" required className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的邮箱" />
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">电话</label>
-                      <input type="tel" id="phone" name="phone" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的联系电话" />
-                    </div>
-                    <div>
-                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">公司</label>
-                      <input type="text" id="company" name="company" className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="请输入您的公司名称" />
-                    </div>
-                  </div>
-                  <div className="mb-6">
-                    <label htmlFor="inquiry_type" className="block text-sm font-medium text-gray-700 mb-2">咨询类型 <span className="text-red-500">*</span></label>
-                    <select id="inquiry_type" name="inquiry_type" required className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm">
-                      <option value="">请选择咨询类型</option>
-                      {inquiryTypes.map((type) => (
-                        <option key={type.value} value={type.value}>{type.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-8">
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">留言内容 <span className="text-red-500">*</span></label>
-                    <textarea id="message" name="message" required rows={5} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm resize-none" placeholder="请详细描述您的需求..." />
-                  </div>
-                  <button type="submit" disabled={loading} className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed">
-                    {loading ? (
-                      <>
-                        <svg className="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        提交中...
-                      </>
-                    ) : '提交咨询'}
-                  </button>
-                </form>
-              )}
+              <LeadCaptureForm
+                sourcePage="/contact"
+                submitLabel="提交咨询并生成建议"
+              />
             </div>
           </div>
         </div>

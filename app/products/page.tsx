@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { coreProductFeatures, financingPlan, productCatalog, productComparison } from '@/lib/product-catalog';
+import { PRODUCT_GUIDES } from '@/lib/sales';
 
 export const metadata: Metadata = {
   title: '产品中心',
@@ -19,10 +20,21 @@ export default function ProductsPage() {
             <br className="hidden sm:block" />
             微算为不同规模的本地 AI 需求提供统一架构、分级交付的产品方案
           </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Link href="/selection" className="btn-primary">
+              帮我选型
+            </Link>
+            <Link href="/contact?intent=tco" className="btn-secondary">
+              申请专属测算
+            </Link>
+          </div>
         </div>
       </section>
 
-      {productCatalog.map((product, index) => (
+      {productCatalog.map((product, index) => {
+        const guide = PRODUCT_GUIDES[product.slug];
+
+        return (
         <section key={product.id} id={product.id} className={`section-padding ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
           <div className="section-container">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -55,9 +67,32 @@ export default function ProductsPage() {
                     </div>
                   ))}
                 </div>
+                <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-gray-100 bg-white p-5">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">适合客户类型</h3>
+                    <ul className="space-y-2">
+                      {guide.customerTypes.slice(0, 3).map((item) => (
+                        <li key={item} className="text-sm text-gray-500">{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-2xl border border-gray-100 bg-white p-5">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">推荐行业</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {guide.recommendedIndustries.map((item) => (
+                        <span key={item} className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
                 <div className="flex flex-wrap items-center gap-4">
                   <Link href={product.href} className="btn-primary">查看详情</Link>
-                  <Link href="/contact" className="btn-secondary">获取方案</Link>
+                  <Link href="/contact?intent=proposal&product=${product.slug}" className="btn-secondary">获取方案</Link>
+                  {product.slug === 'wecalc-b' ? (
+                    <Link href="/contact?intent=leasing&product=wecalc-b" className="btn-outline">我要融资租赁</Link>
+                  ) : null}
                   <span className="text-2xl font-bold text-gray-900">{product.price}</span>
                 </div>
                 <p className="text-sm text-gray-500 mt-4">{product.priceNote}</p>
@@ -93,7 +128,7 @@ export default function ProductsPage() {
             </div>
           </div>
         </section>
-      ))}
+      )})}
 
       <section className="section-padding bg-gray-50">
         <div className="section-container">

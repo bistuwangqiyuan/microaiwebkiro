@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { COMPANY_INFO } from '@/lib/constants';
 import { financingPlan, productCatalog } from '@/lib/product-catalog';
+import { SALES_CHAT_QUICK_ACTIONS, scoreLead, type LeadInput } from '@/lib/sales';
 
 const productPrompt = productCatalog
   .map(
@@ -13,7 +14,7 @@ const detailPrompt = productCatalog
   .map((product) => `- ${product.href}：${product.fullName}详情、规格、适用场景与交付方式`)
   .join('\n');
 
-const SYSTEM_PROMPT = `你是微算科技的AI智能客服助手"微算小助手"。你友好、专业、高效地回答用户关于微算科技产品、技术、服务等方面的问题，并帮助他们导航到网站的相关页面。
+const SYSTEM_PROMPT = `你是微算科技的 AI 销售助理“微算小助手”，你的职责不是泛泛而谈，而是帮助用户更快完成产品选型、降本测算、试点启动和合伙人申请。
 
 公司信息：
 - 公司名称：微算科技（WeCalc Technology）
@@ -32,24 +33,25 @@ ${productPrompt}
 - 交付模式：48-72 小时交钥匙部署，支持从单台到集群的线性扩展
 
 网站页面结构（用于导航建议）：
+- /selection（智能选型）：快速判断推荐产品和启动路径
 - /（首页）：公司概览、产品总览、技术亮点、融资租赁模式
 - /products（产品中心）：产品矩阵总览、核心特性、产品对比表
 ${detailPrompt}
 - /technology（核心技术）：存算分离架构、EBOF 全闪存储技术详解
 - /solutions（解决方案）：金融、医疗、教育、制造、政务、自动驾驶行业方案
 - /case-study（降本案例）：1E 与 1P 场景下的成本对比、三年 TCO 与部署周期分析
-- /about（关于我们）：公司介绍、核心团队、发展历程、资质认证、荣誉奖项
 - /partnership（事业合伙人）：合伙人权益、收益模式、加盟流程
-- /news（新闻资讯）：公司动态、行业资讯、技术分享
-- /contact（联系我们）：联系方式、微信二维码、在线咨询表单
+- /contact（联系我们）：提交需求、生成建议摘要与销售跟进
 
 回复规则：
-1. 始终用中文回复，语气友好专业
-2. 回答要简洁有力，突出微算的核心优势：数据不出域、自主知识产权、高性能低成本
-3. 当用户的问题涉及特定页面内容时，在回复末尾添加导航建议
-4. 导航建议格式：[NAV:/路径|显示文本]，例如 [NAV:/products|查看产品详情]
-5. 不知道的信息不要编造，建议用户联系客服
-6. 每次回复控制在200字以内`;
+1. 始终用中文回复，语气专业、直接、友好。
+2. 回答优先突出：数据不出域、更快上线、更低综合 TCO、融资租赁低门槛启动。
+3. 如果用户信息不足，请最多追问 1 个最关键的问题，优先追问行业、场景、预算或上线时间。
+4. 给出建议时，尽量明确推荐微算-B、微算-P 或微算-E 的理由。
+5. 当用户适合下一步动作时，主动建议：智能选型、查看降本案例、申请试点、提交需求、申请合伙人。
+6. 导航建议格式：[NAV:/路径|显示文本]，例如 [NAV:/selection|去做智能选型]
+7. 不知道的信息不要编造，必要时引导去联系页。
+8. 每次回复控制在 220 字以内。`;
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
@@ -61,6 +63,17 @@ interface APIProvider {
   url: string;
   model: string;
   keyEnv: string;
+}
+
+interface LeadSignal {
+  score: number;
+  level: 'A' | 'B' | 'C';
+  recommendedProduct: 'wecalc-b' | 'wecalc-p' | 'wecalc-e';
+  recommendedCasePath: string;
+  nextAction: string;
+  shouldCapture: boolean;
+  needsContact: boolean;
+  extracted: Partial<LeadInput>;
 }
 
 const PROVIDERS: APIProvider[] = [
@@ -87,15 +100,153 @@ function buildProductReply(slug: 'wecalc-b' | 'wecalc-p' | 'wecalc-e') {
     return `欢迎通过邮箱 ${COMPANY_INFO.email} 或电话 ${COMPANY_INFO.phone} 联系我们。[NAV:/contact|前往联系页面]`;
   }
 
-  return `${product.fullName}适合${product.scenes.slice(0, 3).join('、')}，核心配置为${product.quickSpecs.slice(0, 3).join('，')}。参考价格${product.price}，${product.priceNote}。[NAV:${product.href}|查看${product.name}详情]`;
+  return `${product.fullName}适合${product.scenes.slice(0, 2).join('、')}，核心配置为${product.quickSpecs.slice(0, 3).join('，')}。参考价格${product.price}，${product.priceNote}。[NAV:${product.href}|查看${product.name}详情]`;
 }
 
-function getFallbackReply(userMessages: ChatMessage[]) {
+function detectIndustry(text: string) {
+  const entries = [
+    { keyword: '制造', value: '制造' },
+    { keyword: '工厂', value: '制造' },
+    { keyword: '医疗', value: '医疗' },
+    { keyword: '医院', value: '医疗' },
+    { keyword: '金融', value: '金融' },
+    { keyword: '银行', value: '金融' },
+    { keyword: '高校', value: '高校' },
+    { keyword: '教育', value: '教育' },
+    { keyword: '学校', value: '教育' },
+    { keyword: '科研', value: '科研' },
+    { keyword: '政务', value: '政务' },
+    { keyword: '自动驾驶', value: '自动驾驶' },
+  ];
+
+  return entries.find((item) => text.includes(item.keyword.toLowerCase()))?.value;
+}
+
+function detectBudgetRange(text: string) {
+  if (text.includes('500万') || text.includes('千万') || text.includes('上百万') || text.includes('数百万')) {
+    return '500万以上';
+  }
+  if (text.includes('200万') || text.includes('300万') || text.includes('400万')) {
+    return '200-500万';
+  }
+  if (text.includes('50万') || text.includes('100万') || text.includes('150万')) {
+    return '50-200万';
+  }
+  if (text.includes('30万') || text.includes('40万')) {
+    return '30-50万';
+  }
+  if (text.includes('预算有限') || text.includes('试点')) {
+    return '30万以下';
+  }
+  return undefined;
+}
+
+function detectLaunchTimeline(text: string) {
+  if (text.includes('一周') || text.includes('两周') || text.includes('一个月') || text.includes('30天')) {
+    return '30天内';
+  }
+  if (text.includes('90天') || text.includes('三个月')) {
+    return '90天内';
+  }
+  if (text.includes('半年')) {
+    return '半年内';
+  }
+  if (text.includes('一年')) {
+    return '一年内';
+  }
+  return undefined;
+}
+
+function extractName(text: string) {
+  const match = text.match(/我叫([\u4e00-\u9fa5A-Za-z0-9_-]{2,12})/);
+  return match?.[1];
+}
+
+function extractCompany(text: string) {
+  const match = text.match(/(?:我们是|来自|公司是)([\u4e00-\u9fa5A-Za-z0-9（）()\-]{2,30})/);
+  return match?.[1];
+}
+
+function extractPhone(text: string) {
+  return text.match(/1[3-9]\d{9}/)?.[0];
+}
+
+function extractWechat(text: string) {
+  return text.match(/(?:微信|wechat)[:：]?\s*([A-Za-z0-9_-]{4,30})/i)?.[1];
+}
+
+function buildQualificationQuestion(signal: LeadSignal) {
+  const extracted = signal.extracted;
+
+  if (!extracted.industry) {
+    return '您属于制造、高校、医疗、金融还是其他行业？';
+  }
+
+  if (!extracted.scenario) {
+    return '您最想先落地的 AI 场景是什么？';
+  }
+
+  if (!extracted.budgetRange && !extracted.acceptsLeasing) {
+    return '您更倾向先试点、融资租赁，还是直接正式采购？';
+  }
+
+  if (signal.needsContact) {
+    return '如果方便，您也可以直接留下电话或微信，我先帮您沉淀方案摘要。';
+  }
+
+  return '';
+}
+
+function extractLeadSignal(messages: ChatMessage[], sourcePage?: string): LeadSignal {
+  const userMessages = messages.filter((item) => item.role === 'user');
+  const latestUserMessage = userMessages.at(-1)?.content ?? '';
+  const combinedText = normalizeText(userMessages.map((item) => item.content).join(' '));
+  const latestText = normalizeText(latestUserMessage);
+
+  const extracted: Partial<LeadInput> = {
+    sourceType: 'ai_chat',
+    sourcePage,
+    name: extractName(latestUserMessage),
+    phone: extractPhone(latestUserMessage),
+    wechat: extractWechat(latestUserMessage),
+    companyName: extractCompany(latestUserMessage),
+    industry: detectIndustry(combinedText),
+    budgetRange: detectBudgetRange(combinedText),
+    launchTimeline: detectLaunchTimeline(combinedText),
+    scenario: latestUserMessage.length >= 4 ? latestUserMessage.slice(0, 120) : undefined,
+    needsDataLocal: containsAny(combinedText, ['数据不出域', '本地部署', '本地化', '合规', '安全']),
+    acceptsLeasing: containsAny(combinedText, ['融资租赁', '租赁', '2000', '2,000', '试点']),
+    inquiryType: containsAny(combinedText, ['合伙人', '加盟', '合作伙伴']) ? 'partnership' : 'sales',
+    message: latestUserMessage,
+  };
+
+  const score = scoreLead(extracted);
+
+  return {
+    score: score.score,
+    level: score.level,
+    recommendedProduct: score.recommendedProduct,
+    recommendedCasePath: score.recommendedCasePath,
+    nextAction: score.nextAction,
+    shouldCapture: score.score >= 50 || Boolean(extracted.phone || extracted.wechat || extracted.email),
+    needsContact: !extracted.phone && !extracted.wechat && score.score >= 50,
+    extracted: {
+      ...extracted,
+      scenario: containsAny(latestText, ['你好', '您好']) ? undefined : extracted.scenario,
+    },
+  };
+}
+
+function getFallbackReply(userMessages: ChatMessage[], signal: LeadSignal) {
   const latestUserMessage = [...userMessages].reverse().find((message) => message.role === 'user')?.content ?? '';
   const normalized = normalizeText(latestUserMessage);
 
   if (!latestUserMessage) {
-    return `微算提供数据不出域的微型算力中心，覆盖微算-B、微算-P、微算-E 三类产品，支持本地部署、线性扩展和融资租赁。[NAV:/products|查看产品中心]`;
+    return `我可以帮您做产品选型、降本测算、试点建议和合伙人预筛。先告诉我行业、场景和预算，我会判断更适合微算-B、P 还是 E。[NAV:/selection|去做智能选型]`;
+  }
+
+  if (containsAny(normalized, ['帮我选型', '智能选型', '推荐型号'])) {
+    return `可以，我会根据行业、场景、预算和上线时间帮您判断更适合哪款微算。${buildQualificationQuestion(signal)}[NAV:/selection|去做智能选型]`;
   }
 
   if (containsAny(normalized, ['微算-b', '微算b', '基础版', 'wecalc-b', 'b版'])) {
@@ -111,23 +262,23 @@ function getFallbackReply(userMessages: ChatMessage[]) {
   }
 
   if (containsAny(normalized, ['融资租赁', '租赁', '2000', '2,000', '1p', 'token'])) {
-    return `微算支持融资租赁模式，启动费用仅 2,000 元/月即可享 1P 算力，约等于 4 万元的 ChatGPT Token 使用额度，适合低门槛启动本地 AI 能力。[NAV:/contact|咨询融资租赁方案]`;
+    return `微算支持融资租赁模式，启动费用仅 2,000 元/月即可享 1P 算力，适合预算有限但希望先跑通 AI 场景的客户。[NAV:/contact?intent=leasing&product=wecalc-b|咨询融资租赁方案]`;
   }
 
-  if (containsAny(normalized, ['降本', 'tco', '成本对比', '成本案例', '1e算力', '案例分析'])) {
-    return `微算已提供专门的降本案例页，展示 1E 算力建设与 1P 视频生成 AI 场景的三年 TCO、部署周期和数据不出域优势。[NAV:/case-study|查看降本案例]`;
+  if (containsAny(normalized, ['降本', 'tco', '成本对比', '成本案例', '案例分析'])) {
+    return `微算已提供专门的降本案例页，展示 1E 建设和 1P 视频生成 AI 场景的三年 TCO、部署周期和数据不出域优势。[NAV:/case-study|查看降本案例]`;
   }
 
   if (containsAny(normalized, ['产品', '型号', '版本', '矩阵', '有哪些'])) {
-    return `微算目前有三类产品：微算-B 面向入门试点与教学实训，微算-P 面向中型训练与工业边缘计算，微算-E 面向大规模模型训练与 HPC。[NAV:/products|查看产品中心]`;
+    return `微算目前有三类产品：微算-B 面向入门试点，微算-P 面向中型训练与生产部署，微算-E 面向大规模训练与科研计算。${buildQualificationQuestion(signal)}[NAV:/products|查看产品中心]`;
   }
 
   if (containsAny(normalized, ['数据不出域', '本地部署', '本地化', '云端', '安全'])) {
-    return `数据不出域指系统部署在客户单位内部，数据保存在自有设备中，不必上传公有云，从源头降低泄露风险并更容易满足合规要求。[NAV:/technology|了解核心技术]`;
+    return `数据不出域指系统部署在客户单位内部，数据保存在自有设备中，不必上传公有云，更容易满足合规要求。[NAV:/technology|了解核心技术]`;
   }
 
   if (containsAny(normalized, ['技术', '存算分离', 'ebof', '全闪', 'nvme', 'rocev2'])) {
-    return `微算核心是存算分离架构与 EBOF 全闪存储，通过 NVMe-oF、RoCEv2 等能力提升数据加载效率、吞吐与扩展效率，同时降低综合 TCO。[NAV:/technology|查看技术详情]`;
+    return `微算核心是存算分离架构与 EBOF 全闪存储，能提升数据加载效率、吞吐与扩展效率，同时降低综合 TCO。[NAV:/technology|查看技术详情]`;
   }
 
   if (containsAny(normalized, ['部署', '交付', '上线', '多久', '周期'])) {
@@ -135,14 +286,24 @@ function getFallbackReply(userMessages: ChatMessage[]) {
   }
 
   if (containsAny(normalized, ['合伙人', '事业合伙人', '加盟', '合作'])) {
-    return `微算提供共享微算事业合伙人计划，支持区域合作、生态共建与业务增长协同，具体可查看权益与流程说明。[NAV:/partnership|了解合伙人计划]`;
+    return `微算提供共享微算事业合伙人计划，支持区域合作、生态共建与业务增长协同。${buildQualificationQuestion(signal)}[NAV:/partnership|了解合伙人计划]`;
   }
 
   if (containsAny(normalized, ['联系', '电话', '邮箱', '咨询', '报价'])) {
-    return `欢迎通过邮箱 ${COMPANY_INFO.email} 或电话 ${COMPANY_INFO.phone} 联系我们，我们也可以根据场景提供产品与融资方案建议。[NAV:/contact|前往联系页面]`;
+    return `欢迎通过邮箱 ${COMPANY_INFO.email} 或电话 ${COMPANY_INFO.phone} 联系我们。若您告知行业、场景和预算，我也能先帮您判断更适合的方案。[NAV:/contact|前往联系页面]`;
   }
 
-  return `微算提供数据不出域的微型算力中心，覆盖微算-B、微算-P、微算-E 三类产品，支持本地部署、线性扩展和融资租赁。您可以继续问我产品、技术、部署或合作问题。[NAV:/products|查看产品中心]`;
+  return `我理解您在评估本地 AI 算力方案。当前更建议您优先考虑 ${signal.recommendedProduct === 'wecalc-b' ? '微算-B' : signal.recommendedProduct === 'wecalc-p' ? '微算-P' : '微算-E'}。${buildQualificationQuestion(signal)}[NAV:/selection|去做智能选型]`;
+}
+
+function finalizeReply(reply: string, signal: LeadSignal) {
+  let nextReply = reply.trim();
+
+  if (signal.needsContact && !nextReply.includes('电话') && !nextReply.includes('微信')) {
+    nextReply = `${nextReply} 如果方便，可直接留下电话或微信，我先帮您沉淀一版建议摘要。`;
+  }
+
+  return nextReply;
 }
 
 async function callProvider(provider: APIProvider, messages: ChatMessage[]): Promise<string> {
@@ -157,13 +318,13 @@ async function callProvider(provider: APIProvider, messages: ChatMessage[]): Pro
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: provider.model,
         messages,
-        temperature: 0.7,
-        max_tokens: 800,
+        temperature: 0.5,
+        max_tokens: 600,
       }),
       signal: controller.signal,
     });
@@ -186,6 +347,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const userMessages: ChatMessage[] = Array.isArray(body.messages) ? body.messages : [];
+    const sourcePage = typeof body.sourcePage === 'string' ? body.sourcePage : '/';
+    const leadSignal = extractLeadSignal(userMessages, sourcePage);
 
     const messages: ChatMessage[] = [
       { role: 'system', content: SYSTEM_PROMPT },
@@ -196,8 +359,10 @@ export async function POST(request: NextRequest) {
 
     if (configuredProviders.length === 0) {
       return NextResponse.json({
-        reply: getFallbackReply(userMessages),
+        reply: finalizeReply(getFallbackReply(userMessages, leadSignal), leadSignal),
         provider: 'Knowledge Base',
+        leadSignal,
+        quickActions: SALES_CHAT_QUICK_ACTIONS,
       });
     }
 
@@ -205,7 +370,12 @@ export async function POST(request: NextRequest) {
     for (const provider of configuredProviders) {
       try {
         const reply = await callProvider(provider, messages);
-        return NextResponse.json({ reply, provider: provider.name });
+        return NextResponse.json({
+          reply: finalizeReply(reply, leadSignal),
+          provider: provider.name,
+          leadSignal,
+          quickActions: SALES_CHAT_QUICK_ACTIONS,
+        });
       } catch (err) {
         lastError = err instanceof Error ? err.message : String(err);
         console.error(`[AI Chat] ${provider.name} failed:`, lastError);
@@ -214,10 +384,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        reply: getFallbackReply(userMessages),
+        reply: finalizeReply(getFallbackReply(userMessages, leadSignal), leadSignal),
         provider: 'Knowledge Base',
         fallback: true,
         error: lastError,
+        leadSignal,
+        quickActions: SALES_CHAT_QUICK_ACTIONS,
       },
       { status: 200 }
     );

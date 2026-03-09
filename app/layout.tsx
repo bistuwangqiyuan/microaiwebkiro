@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AIChatbot from '@/components/AIChatbot';
+import SalesEventTracker from '@/components/sales/SalesEventTracker';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
@@ -61,6 +62,7 @@ export default function RootLayout({
           跳到主要内容
         </a>
         <Header />
+        <SalesEventTracker />
         <main id="main-content" className="flex-1">
           {children}
         </main>

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 
 const navItems = [
   { name: '首页', href: '/' },
+  { name: '智能选型', href: '/selection' },
   { name: '产品中心', href: '/products' },
   { name: '核心技术', href: '/technology' },
   { name: '解决方案', href: '/solutions' },
@@ -70,6 +71,19 @@ export default function Header() {
             ))}
           </div>
 
+          <div className="hidden lg:flex items-center gap-3">
+            <Link
+              href="/contact?intent=tco"
+              className={`inline-flex items-center rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                scrolled || !isHomePage
+                  ? 'bg-brand-600 text-white hover:bg-brand-700'
+                  : 'border border-white/20 bg-white/10 text-white hover:bg-white/15'
+              }`}
+            >
+              申请测算
+            </Link>
+          </div>
+
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`lg:hidden p-2 rounded-lg transition-colors ${textColor}`}
@@ -103,6 +117,12 @@ export default function Header() {
                 {item.name}
               </Link>
             ))}
+            <Link
+              href="/contact?intent=tco"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+            >
+              申请专属测算
+            </Link>
           </div>
         </div>
       )}

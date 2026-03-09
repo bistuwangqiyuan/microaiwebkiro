@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import PartnershipApplicationForm from '@/components/sales/PartnershipApplicationForm';
 
 export const metadata: Metadata = {
   title: '事业合伙人',
@@ -44,7 +45,7 @@ export default function PartnershipPage() {
             <br />
             成为AI时代的创业者，共享未来上市收益
           </p>
-          <Link href="/contact" className="btn-primary text-base px-10 py-4">立即申请</Link>
+          <Link href="#partner-form" className="btn-primary text-base px-10 py-4">提交区域合作申请</Link>
         </div>
       </section>
 
@@ -108,6 +109,32 @@ export default function PartnershipPage() {
         </div>
       </section>
 
+      <section id="partner-form" className="section-padding bg-brand-950 text-white">
+        <div className="section-container">
+          <div className="grid gap-10 lg:grid-cols-[0.78fr,1.22fr]">
+            <div>
+              <p className="text-sm font-semibold text-brand-300 tracking-widest uppercase mb-3">PRE-SCREEN</p>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">先做一轮区域合作预筛</h2>
+              <p className="text-white/70 leading-relaxed">
+                如果您在本地有制造业、园区、医院、高校等资源，适合优先申请评审。系统会先根据区域资源、团队能力和预期客户覆盖情况生成预筛结果。
+              </p>
+              <div className="mt-8 space-y-4">
+                {[
+                  '我们更关注区域资源与执行能力，而不是传统加盟资历。',
+                  '提交后会自动说明下一步：资料审核 -> 区域评估 -> 面谈 -> 签约。',
+                  '高优先级申请会更快进入人工复核流程。',
+                ].map((item) => (
+                  <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/80">
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <PartnershipApplicationForm />
+          </div>
+        </div>
+      </section>
+
       <section className="section-padding bg-white">
         <div className="section-container">
           <div className="text-center mb-16">
@@ -135,7 +162,7 @@ export default function PartnershipPage() {
           <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
             任何有志于AI产业的个人，均可通过合伙人机制零门槛共享AI算力事业
           </p>
-          <Link href="/contact" className="btn-primary text-base px-10 py-4">申请成为合伙人</Link>
+          <Link href="#partner-form" className="btn-primary text-base px-10 py-4">申请成为合伙人</Link>
         </div>
       </section>
     </>

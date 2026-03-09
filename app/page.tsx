@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { coreProductFeatures, financingPlan, productCatalog, validationHighlights } from '@/lib/product-catalog';
+import { HOME_SALES_SHORTCUTS } from '@/lib/sales';
 
 export const metadata: Metadata = {
   title: '微算科技 WeCalc — 数据不出域的微型算力中心',
@@ -97,14 +98,14 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-              <Link href="/products" className="btn-primary text-base px-10 py-4">
-                探索产品
+              <Link href="/selection" className="btn-primary text-base px-10 py-4">
+                3 个问题，1 分钟判断适合哪款微算
                 <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </Link>
-              <Link href="/contact" className="inline-flex items-center px-10 py-4 text-base font-semibold text-white border-2 border-white/20 rounded-full hover:bg-white/10 transition-all duration-300">
-                联系我们
+              <Link href="/contact?intent=tco" className="inline-flex items-center px-10 py-4 text-base font-semibold text-white border-2 border-white/20 rounded-full hover:bg-white/10 transition-all duration-300">
+                申请专属降本测算
               </Link>
             </div>
 
@@ -122,6 +123,40 @@ export default function HomePage() {
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
           <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2">
             <div className="w-1 h-2.5 bg-white/40 rounded-full animate-bounce" />
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding bg-white">
+        <div className="section-container">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr,0.95fr]">
+            <div>
+              <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">AI SALES</p>
+              <h2 className="section-title text-gray-900">官网已经开始承担销售职责</h2>
+              <p className="mt-6 text-lg leading-relaxed text-gray-500">
+                从智能选型、融资租赁试点到降本测算和合伙人预筛，用户不需要先找销售，也可以先完成第一轮判断和留资。
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link href="/selection" className="btn-primary">
+                  去做智能选型
+                </Link>
+                <Link href="/contact?intent=pilot" className="btn-secondary">
+                  申请试点
+                </Link>
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {HOME_SALES_SHORTCUTS.map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="rounded-3xl border border-gray-100 bg-gray-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
+                >
+                  <h3 className="text-lg font-bold text-gray-900">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-500">{item.description}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -1,11 +1,39 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import type { FormEvent } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { getVisitorId, trackSalesEvent } from '@/lib/sales-client';
+import { SALES_CHAT_QUICK_ACTIONS, SALES_ENDPOINTS, getProductDisplayName } from '@/lib/sales';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+}
+
+interface LeadSignal {
+  score: number;
+  level: 'A' | 'B' | 'C';
+  recommendedProduct: string;
+  recommendedCasePath: string;
+  nextAction: string;
+  shouldCapture: boolean;
+  needsContact: boolean;
+  extracted?: {
+    name?: string;
+    phone?: string;
+    wechat?: string;
+    email?: string;
+    companyName?: string;
+    industry?: string;
+    budgetRange?: string;
+    launchTimeline?: string;
+    scenario?: string;
+    message?: string;
+    acceptsLeasing?: boolean;
+    needsDataLocal?: boolean;
+    inquiryType?: string;
+  };
 }
 
 function parseNavLinks(text: string) {
@@ -34,9 +62,23 @@ export default function AIChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [leadSignal, setLeadSignal] = useState<LeadSignal | null>(null);
+  const [quickActions, setQuickActions] = useState<string[]>([...SALES_CHAT_QUICK_ACTIONS]);
+  const [captureOpen, setCaptureOpen] = useState(false);
+  const [captureLoading, setCaptureLoading] = useState(false);
+  const [captureMessage, setCaptureMessage] = useState('');
+  const [captureForm, setCaptureForm] = useState({
+    name: '',
+    phone: '',
+    wechat: '',
+    email: '',
+    companyName: '',
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const conversationIdRef = useRef(`chat-${crypto.randomUUID()}`);
   const router = useRouter();
+  const pathname = usePathname();
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,6 +94,20 @@ export default function AIChatbot() {
     }
   }, [open]);
 
+  useEffect(() => {
+    if (!leadSignal?.extracted) {
+      return;
+    }
+
+    setCaptureForm((prev) => ({
+      name: leadSignal.extracted?.name ?? prev.name,
+      phone: leadSignal.extracted?.phone ?? prev.phone,
+      wechat: leadSignal.extracted?.wechat ?? prev.wechat,
+      email: leadSignal.extracted?.email ?? prev.email,
+      companyName: leadSignal.extracted?.companyName ?? prev.companyName,
+    }));
+  }, [leadSignal]);
+
   async function handleSend(directText?: string) {
     const trimmed = (directText || input).trim();
     if (!trimmed || loading) return;
@@ -62,11 +118,14 @@ export default function AIChatbot() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/ai-chat', {
+      const res = await fetch(SALES_ENDPOINTS.aiChat ?? '/api/ai-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [...messages, userMsg].map(m => ({ role: m.role, content: m.content })),
+          sourcePage: pathname,
+          visitorId: getVisitorId(),
+          conversationId: conversationIdRef.current,
         }),
       });
 
@@ -79,6 +138,21 @@ export default function AIChatbot() {
         ? data.reply
         : '暂时没有获取到有效答复，您可以继续提问或前往联系页面咨询。[NAV:/contact|前往联系页面]';
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+      setLeadSignal(data.leadSignal ?? null);
+      setQuickActions(Array.isArray(data.quickActions) && data.quickActions.length ? data.quickActions : [...SALES_CHAT_QUICK_ACTIONS]);
+
+      if (data.leadSignal?.needsContact) {
+        setCaptureOpen(true);
+      }
+
+      await trackSalesEvent({
+        path: pathname || '/',
+        eventName: 'ai_chat_message',
+        eventPayload: {
+          level: data.leadSignal?.level,
+          recommendedProduct: data.leadSignal?.recommendedProduct,
+        },
+      });
     } catch {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -86,6 +160,66 @@ export default function AIChatbot() {
       }]);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleLeadCapture(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!leadSignal || captureLoading) return;
+
+    setCaptureLoading(true);
+    setCaptureMessage('');
+
+    try {
+      const response = await fetch(SALES_ENDPOINTS.leadCapture, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sourceType: 'ai_chat',
+          sourcePage: pathname,
+          conversationId: conversationIdRef.current,
+          visitorId: getVisitorId(),
+          ...leadSignal.extracted,
+          ...captureForm,
+          summary: leadSignal.extracted?.message ?? messages.at(-1)?.content,
+          messages: messages.map((message) => ({
+            role: message.role,
+            content: message.content,
+          })),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || '留资失败，请稍后重试');
+      }
+
+      const productName = getProductDisplayName(leadSignal.recommendedProduct);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: `已收到您的联系方式，我已为您沉淀销售线索并建议优先关注 ${productName}。如需继续，可直接查看推荐页面。[NAV:${leadSignal.recommendedCasePath}|查看推荐内容]`,
+        },
+      ]);
+      setCaptureMessage('已成功留资，我们会根据线索优先级安排后续跟进。');
+      setCaptureOpen(false);
+
+      await trackSalesEvent({
+        path: pathname || '/',
+        eventName: 'ai_chat_capture',
+        eventPayload: {
+          leadLevel: data.leadLevel,
+          recommendedProduct: data.recommendedProduct,
+        },
+      });
+    } catch (error) {
+      setCaptureMessage(error instanceof Error ? error.message : '留资失败，请稍后重试');
+    } finally {
+      setCaptureLoading(false);
     }
   }
 
@@ -152,7 +286,7 @@ export default function AIChatbot() {
             </div>
             <div>
               <h3 className="text-white font-semibold text-sm">微算智能助手</h3>
-              <p className="text-white/70 text-xs">随时为您解答，还能导航到相关页面</p>
+              <p className="text-white/70 text-xs">可做选型、测算、试点建议和线索留资</p>
             </div>
           </div>
 
@@ -166,15 +300,9 @@ export default function AIChatbot() {
                   </svg>
                 </div>
                 <p className="text-sm font-medium text-gray-900 mb-1">您好！我是微算智能助手</p>
-                <p className="text-xs text-gray-500 mb-4">有任何问题都可以问我哦~</p>
+                <p className="text-xs text-gray-500 mb-4">告诉我行业、场景和预算，我可以先帮您判断更适合哪款微算。</p>
                 <div className="space-y-2">
-                  {[
-                    '微算-B 适合什么场景？',
-                    '融资租赁模式怎么收费？',
-                    '微算降本案例怎么看？',
-                    '什么是数据不出域？',
-                    '微算的核心技术是什么？',
-                  ].map((q) => (
+                  {quickActions.map((q) => (
                     <button
                       key={q}
                       onClick={() => handleSend(q)}
@@ -199,6 +327,80 @@ export default function AIChatbot() {
                 </div>
               </div>
             ))}
+
+            {leadSignal?.shouldCapture && (
+              <div className="rounded-2xl border border-brand-100 bg-brand-50 p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">AI Sales Signal</p>
+                    <h4 className="mt-2 text-sm font-semibold text-gray-900">
+                      当前建议优先关注 {getProductDisplayName(leadSignal.recommendedProduct)}
+                    </h4>
+                    <p className="mt-1 text-xs leading-relaxed text-gray-600">
+                      线索评分 {leadSignal.score} 分，当前为 {leadSignal.level} 类。
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setCaptureOpen((prev) => !prev)}
+                    className="rounded-full border border-brand-200 px-3 py-1.5 text-xs font-semibold text-brand-600 transition hover:bg-white"
+                  >
+                    {captureOpen ? '收起留资' : '留下联系方式'}
+                  </button>
+                </div>
+
+                {captureOpen && (
+                  <form onSubmit={handleLeadCapture} className="mt-4 grid gap-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <input
+                        value={captureForm.name}
+                        onChange={(event) => setCaptureForm((prev) => ({ ...prev, name: event.target.value }))}
+                        className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+                        placeholder="姓名"
+                      />
+                      <input
+                        value={captureForm.companyName}
+                        onChange={(event) => setCaptureForm((prev) => ({ ...prev, companyName: event.target.value }))}
+                        className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+                        placeholder="公司 / 机构"
+                      />
+                      <input
+                        value={captureForm.phone}
+                        onChange={(event) => setCaptureForm((prev) => ({ ...prev, phone: event.target.value }))}
+                        className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+                        placeholder="电话"
+                      />
+                      <input
+                        value={captureForm.wechat}
+                        onChange={(event) => setCaptureForm((prev) => ({ ...prev, wechat: event.target.value }))}
+                        className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+                        placeholder="微信"
+                      />
+                    </div>
+                    <input
+                      value={captureForm.email}
+                      onChange={(event) => setCaptureForm((prev) => ({ ...prev, email: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+                      placeholder="邮箱"
+                    />
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="submit"
+                        disabled={captureLoading}
+                        className="rounded-full bg-brand-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
+                      >
+                        {captureLoading ? '提交中...' : '提交并安排跟进'}
+                      </button>
+                      {captureMessage ? (
+                        <p className="text-xs text-gray-600">{captureMessage}</p>
+                      ) : (
+                        <p className="text-xs text-gray-500">留下任意一种联系方式即可。</p>
+                      )}
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
 
             {loading && (
               <div className="flex justify-start">

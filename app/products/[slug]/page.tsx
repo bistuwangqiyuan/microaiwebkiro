@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { financingPlan, getProductBySlug, productCatalog } from '@/lib/product-catalog';
+import { PRODUCT_GUIDES } from '@/lib/sales';
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -36,6 +37,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   const relatedProducts = productCatalog.filter((item) => item.slug !== product.slug);
+  const guide = PRODUCT_GUIDES[product.slug];
 
   return (
     <>
@@ -63,7 +65,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <p className="text-lg text-white/75 leading-relaxed max-w-3xl mb-8">{product.longDescription}</p>
 
               <div className="flex flex-wrap items-center gap-4 mb-8">
-                <Link href="/contact" className="btn-primary">获取专属方案</Link>
+                <Link href={`/contact?intent=pilot&product=${product.slug}`} className="btn-primary">我要试点</Link>
+                <Link href={`/contact?intent=${product.slug === 'wecalc-b' ? 'leasing' : 'proposal'}&product=${product.slug}`} className="btn-secondary">
+                  {product.slug === 'wecalc-b' ? '我要融资租赁' : '获取专属方案'}
+                </Link>
                 <Link href="/products" className="inline-flex items-center px-8 py-3.5 text-sm font-semibold text-white border border-white/20 rounded-full hover:bg-white/10 transition-all duration-300">
                   查看全部产品
                 </Link>
@@ -96,6 +101,40 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 <div className="text-sm text-gray-500">{metric.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding bg-gray-50">
+        <div className="section-container">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-[2rem] border border-gray-100 bg-white p-8">
+              <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">FIT</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">适合客户标签</h2>
+              <div className="flex flex-wrap gap-3">
+                {guide.customerTypes.map((item) => (
+                  <span key={item} className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700">
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-6 text-sm leading-relaxed text-gray-600">{guide.recommendation}</p>
+            </div>
+            <div className="rounded-[2rem] border border-gray-100 bg-white p-8">
+              <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">INDUSTRIES</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">推荐行业</h2>
+              <div className="flex flex-wrap gap-3">
+                {guide.recommendedIndustries.map((item) => (
+                  <span key={item} className="rounded-full bg-brand-50 px-4 py-2 text-sm text-brand-700">
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-6 flex flex-wrap gap-4">
+                <Link href="/solutions" className="btn-secondary">查看行业方案</Link>
+                <Link href="/case-study" className="btn-outline">查看关联案例</Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -179,6 +218,29 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 <Link href="/products/wecalc-b" className="btn-secondary">查看微算-B租赁方案</Link>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding bg-white">
+        <div className="section-container">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">BUYING PATH</p>
+            <h2 className="section-title text-gray-900">推荐购买路径</h2>
+            <p className="section-subtitle">
+              根据项目阶段，可从试点、融资租赁、正式采购或扩容规划中选择更合适的进入方式
+            </p>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {guide.purchasePaths.map((item) => (
+              <div key={item.title} className="rounded-3xl border border-gray-100 bg-gray-50 p-6">
+                <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-gray-600">{item.description}</p>
+                <Link href={item.href} className="mt-6 inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+                  {item.ctaLabel}
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>

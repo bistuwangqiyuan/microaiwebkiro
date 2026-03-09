@@ -61,12 +61,22 @@ export const API_ENDPOINTS = {
   products: '/api/products',
   contact: '/api/contact',
   partnership: '/api/partnership',
-  aiChat: '/api/ai-chat'
+  aiChat: '/api/ai-chat',
+  leadScore: '/api/lead-score',
+  leadCapture: '/api/lead-capture',
+  events: '/api/events',
+  salesDashboard: '/api/admin/dashboard',
+  agentRun: '/api/agent/run',
+  agentOpenclawExecute: '/api/agent/openclaw-execute',
+  adminAgentRuns: '/api/admin/agent-runs',
+  adminGmDecisions: '/api/admin/gm-decisions',
+  meetingBriefing: '/api/meeting-briefing',
 } as const;
 
 // Navigation links
 export const NAV_LINKS = [
   { key: 'home', href: '/' },
+  { key: 'selection', href: '/selection' },
   { key: 'products', href: '/products' },
   { key: 'technology', href: '/technology' },
   { key: 'solutions', href: '/solutions' },

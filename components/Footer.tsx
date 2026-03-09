@@ -5,6 +5,7 @@ const footerLinks = {
   products: {
     title: '产品中心',
     links: [
+      { name: '智能选型', href: '/selection' },
       { name: '微算-B 基础版', href: '/products/wecalc-b' },
       { name: '微算-P 专业版', href: '/products/wecalc-p' },
       { name: '微算-E 企业版', href: '/products/wecalc-e' },
@@ -32,6 +33,8 @@ const footerLinks = {
   support: {
     title: '联系支持',
     links: [
+      { name: '申请专属测算', href: '/contact?intent=tco' },
+      { name: '融资租赁方案', href: '/contact?intent=leasing&product=wecalc-b' },
       { name: '联系我们', href: '/contact' },
       { name: '隐私政策', href: '/privacy' },
       { name: '服务条款', href: '/terms' },
