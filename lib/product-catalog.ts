@@ -68,8 +68,8 @@ export const productCatalog: ProductCatalogItem[] = [
     description: '面向小型 AI 推理、数据分析和教学实训，单台设备即可提供完整算力服务能力。',
     longDescription:
       '微算-B 以“最小可用”为设计目标，将计算、存储、管控能力集成在一台设备中，帮助企业和院校在 48-72 小时内建立起安全、本地、可扩展的 AI 算力底座。',
-    price: '约 5 万元',
-    priceNote: '试点期免费赠送或融资租赁 2,000 元/月',
+    price: '9.8 万元',
+    priceNote: '融资租赁 2,000 元/月',
     highlight: '1P 入门首选',
     color: 'from-blue-500 to-cyan-400',
     image: '/image/微算产品图1.jpg',
@@ -198,7 +198,7 @@ export const productComparison = [
   { label: '可扩展性', basic: '单台起步，线性扩展', pro: '百节点扩展', enterprise: '万台级集群演进' },
   { label: '国产化兼容', basic: '✓', pro: '✓', enterprise: '✓' },
   { label: '数据不出域', basic: '✓', pro: '✓', enterprise: '✓' },
-  { label: '参考价格', basic: '约 5 万元 / 2,000 元/月', pro: '200-500 万元', enterprise: '500 万元以上' },
+  { label: '参考价格', basic: '9.8 万元 / 2,000 元/月', pro: '200-500 万元', enterprise: '500 万元以上' },
 ] as const;
 
 export function getProductBySlug(slug: string) {

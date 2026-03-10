@@ -332,7 +332,7 @@ export function getRecommendedCasePath(input: Partial<LeadInput>, recommendedPro
 export function estimateOpportunityValue(product: ProductSlug) {
   if (product === 'wecalc-e') return 5000000;
   if (product === 'wecalc-p') return 2000000;
-  return 50000;
+  return 98000;
 }
 
 export function getLeadLevel(score: number): LeadLevel {

@@ -52,14 +52,14 @@ const caseTwoRows = [
     label: '初始投入',
     selfBuilt: '80–120 万元',
     cloud: '0',
-    purchase: '5 万元',
+    purchase: '9.8 万元',
     lease: '0（月付 2,000 元）',
   },
   {
     label: '三年 TCO',
     selfBuilt: '96–144 万元',
     cloud: '约 105 万元',
-    purchase: '约 7.5 万元（得 1P）',
+    purchase: '约 12.2 万元（得 1P）',
     lease: '约 7.2 万元',
   },
   {

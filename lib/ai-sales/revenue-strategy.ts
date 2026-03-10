@@ -77,7 +77,7 @@ export function selectStrategy(ctx: GmOperatingContext): GmDecisionOutput {
 function estimateExpectedCashIn(strategy: CashflowStrategy, ctx: GmOperatingContext): number {
   switch (strategy) {
     case 'B_LEASING_PUSH': return 2000;
-    case 'B_SALE_PUSH': return 50000;
+    case 'B_SALE_PUSH': return 98000;
     case 'B_POC_PUSH': return 5000;
     case 'B_SERVICE_PACKAGE_PUSH': return 10000;
     case 'PARTNER_STARTER_PUSH': return 15000;

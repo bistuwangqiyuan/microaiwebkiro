@@ -53,7 +53,7 @@ export function generateBProposal(params: {
   };
 
   const valueMap: Record<string, number> = {
-    sale: 50000,
+    sale: 98000,
     leasing: 2000,
     pilot: 5000,
   };
