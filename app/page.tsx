@@ -2,10 +2,29 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { coreProductFeatures, financingPlan, productCatalog, validationHighlights } from '@/lib/product-catalog';
 import { HOME_SALES_SHORTCUTS } from '@/lib/sales';
+import { BASE_URL, HOME_FAQS, generateBreadcrumbJsonLd, generateFAQJsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '微算科技 WeCalc — 数据不出域的微型算力中心',
-  description: '微算科技提供数据不出域的微型算力中心解决方案，包含基础版、专业版、企业版三种产品。基于存算分离架构与EBOF全闪存储核心技术。',
+  title: '微算科技 WeCalc — 数据不出域的微型算力中心 | 存算分离·EBOF全闪存储',
+  description:
+    '微算科技提供数据不出域的微型算力中心解决方案，包含基础版(9.8万起)、专业版、企业版三种产品。基于存算分离架构与EBOF全闪存储核心技术，融资租赁2,000元/月起，48-72小时交钥匙交付。华为昇腾+鲲鹏双认证。',
+  alternates: {
+    canonical: BASE_URL,
+  },
+  openGraph: {
+    title: '微算科技 WeCalc — 数据不出域的微型算力中心',
+    description:
+      '基于存算分离架构与EBOF全闪存储核心技术，融资租赁2,000元/月起。华为昇腾+鲲鹏双认证。',
+    url: BASE_URL,
+    images: [
+      {
+        url: '/image/微算产品架构图40829.png',
+        width: 1200,
+        height: 630,
+        alt: '微算科技微型算力中心产品架构',
+      },
+    ],
+  },
 };
 
 const stats = [
@@ -62,9 +81,23 @@ const news = [
   },
 ];
 
+const homeBreadcrumb = generateBreadcrumbJsonLd([
+  { name: '首页', url: BASE_URL },
+]);
+
+const faqJsonLd = generateFAQJsonLd(HOME_FAQS);
+
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeBreadcrumb) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
         <div className="absolute inset-0">
@@ -443,6 +476,44 @@ export default function HomePage() {
                   <p className="text-sm text-gray-500 line-clamp-2">{item.summary}</p>
                 </div>
               </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="section-padding bg-white" id="faq" itemScope itemType="https://schema.org/FAQPage">
+        <div className="section-container">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-brand-600 tracking-widest uppercase mb-3">FAQ</p>
+            <h2 className="section-title text-gray-900">常见问题</h2>
+            <p className="section-subtitle">关于微算科技和微型算力中心的常见问题解答</p>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-4">
+            {HOME_FAQS.map((faq) => (
+              <details
+                key={faq.question}
+                className="group rounded-2xl border border-gray-100 bg-gray-50 overflow-hidden"
+                itemScope
+                itemProp="mainEntity"
+                itemType="https://schema.org/Question"
+              >
+                <summary className="flex items-center justify-between gap-4 p-6 cursor-pointer list-none font-semibold text-gray-900 hover:bg-white transition-colors">
+                  <span itemProp="name">{faq.question}</span>
+                  <svg className="w-5 h-5 flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <div
+                  className="px-6 pb-6 text-sm text-gray-600 leading-relaxed"
+                  itemScope
+                  itemProp="acceptedAnswer"
+                  itemType="https://schema.org/Answer"
+                >
+                  <p itemProp="text">{faq.answer}</p>
+                </div>
+              </details>
             ))}
           </div>
         </div>

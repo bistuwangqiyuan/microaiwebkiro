@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '隐私政策',
-  description: '微算科技隐私政策',
+  description: '微算科技(WeCalc Technology)隐私政策。了解我们如何收集、使用和保护您的个人信息。',
+  alternates: { canonical: `${BASE_URL}/privacy` },
+  robots: { index: true, follow: true },
 };
 
 export default function PrivacyPage() {

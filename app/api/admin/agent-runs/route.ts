@@ -12,10 +12,12 @@ export async function GET() {
     }
 
     const runs = await getRecentRuns(20);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rows: any[] = Array.isArray(runs) ? runs : [];
 
     return NextResponse.json({
       ok: true,
-      runs: runs.map((run) => ({
+      runs: rows.map((run) => ({
         runId: run.id,
         triggerType: run.trigger_type,
         status: run.status,

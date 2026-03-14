@@ -1,0 +1,18 @@
+{
+  "name": "微算科技 WeCalc — 数据不出域的微型算力中心",
+  "short_name": "微算科技",
+  "description": "微算科技提供数据不出域的微型算力中心解决方案，基于存算分离架构与EBOF全闪存储技术。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["technology", "business"]
+}

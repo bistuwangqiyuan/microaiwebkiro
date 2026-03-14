@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '核心技术',
-  description: '微算科技两大核心技术：存算分离架构与EBOF全闪存储。NVMe-oF协议、RoCEv2高速互联、PCIe Gen5无网关分布式存储池。',
+  title: '核心技术 — 存算分离架构与EBOF全闪存储',
+  description:
+    '微算科技两大核心技术详解：存算分离架构(NVMe-oF协议、RoCEv2高速互联、交互延迟≤100μs、集群带宽≥100Gbps)与EBOF全闪存储(PCIe Gen5、IOPS≥100万、带宽≥56GB/s)。数据加载时间降低72%，吞吐量提升64%。',
+  alternates: { canonical: `${BASE_URL}/technology` },
+  openGraph: {
+    title: '核心技术 — 存算分离架构与EBOF全闪存储 | 微算科技',
+    description: 'NVMe-oF协议、RoCEv2高速互联、PCIe Gen5无网关分布式存储池',
+    url: `${BASE_URL}/technology`,
+  },
 };
 
 export default function TechnologyPage() {

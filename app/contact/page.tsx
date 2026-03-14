@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Image from 'next/image';
 import LeadCaptureForm from '@/components/sales/LeadCaptureForm';
 
@@ -116,10 +117,12 @@ export default function ContactPage() {
             </div>
 
             <div className="lg:col-span-3">
-              <LeadCaptureForm
-                sourcePage="/contact"
-                submitLabel="提交咨询并生成建议"
-              />
+              <Suspense fallback={<div className="animate-pulse bg-gray-100 rounded-2xl h-96" />}>
+                <LeadCaptureForm
+                  sourcePage="/contact"
+                  submitLabel="提交咨询并生成建议"
+                />
+              </Suspense>
             </div>
           </div>
         </div>

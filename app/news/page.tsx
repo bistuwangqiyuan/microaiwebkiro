@@ -1,8 +1,16 @@
 import type { Metadata } from 'next';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '新闻资讯',
-  description: '微算科技最新动态、行业资讯和技术分享。了解微算在数据不出域算力领域的最新进展。',
+  title: '新闻资讯 — 微算科技最新动态与行业洞察',
+  description:
+    '微算科技最新动态、行业资讯和技术分享。了解微算在数据不出域算力领域的最新进展，包括华为开发者大会、央视专题报道、行业创新大奖等重要事件。',
+  alternates: { canonical: `${BASE_URL}/news` },
+  openGraph: {
+    title: '新闻资讯 | 微算科技',
+    description: '微算科技最新动态与行业洞察',
+    url: `${BASE_URL}/news`,
+  },
 };
 
 const newsData = [

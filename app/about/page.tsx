@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '关于我们',
-  description: '微算科技——数据不出域的微型算力中心领导者。国内唯一通过硬件加速全闪存储实现算力加速的团队，华为昇腾+鲲鹏双认证。',
+  title: '关于微算科技 — 国内唯一硬件加速全闪存储算力团队',
+  description:
+    '微算科技——数据不出域的微型算力中心领导者。国内唯一通过硬件加速全闪存储实现算力加速的团队，华为昇腾+鲲鹏双认证。核心团队来自北京信息科技大学，央视专题报道企业。',
+  alternates: { canonical: `${BASE_URL}/about` },
+  openGraph: {
+    title: '关于微算科技 — 数据不出域的微型算力中心领导者',
+    description: '国内唯一通过硬件加速全闪存储实现算力加速的团队，华为昇腾+鲲鹏双认证',
+    url: `${BASE_URL}/about`,
+  },
 };
 
 const milestones = [

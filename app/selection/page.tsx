@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import ProductSelector from '@/components/sales/ProductSelector';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '智能选型',
-  description: '通过行业、场景、预算和上线时间快速判断更适合的微算产品与启动路径。',
+  title: '智能选型 — 3个问题1分钟找到适合的微算产品',
+  description:
+    '通过行业、场景、预算和上线时间，3个问题1分钟快速判断更适合的微算产品(微算-B/P/E)与启动路径(试点/租赁/采购)。免费在线选型工具。',
+  alternates: { canonical: `${BASE_URL}/selection` },
+  openGraph: {
+    title: '智能选型工具 | 微算科技',
+    description: '3个问题，1分钟判断适合哪款微算产品',
+    url: `${BASE_URL}/selection`,
+  },
 };
 
 export default function SelectionPage() {

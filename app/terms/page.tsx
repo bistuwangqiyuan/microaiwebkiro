@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '服务条款',
-  description: '微算科技服务条款',
+  description: '微算科技(WeCalc Technology)服务条款。了解使用微算科技产品和服务的相关条款与条件。',
+  alternates: { canonical: `${BASE_URL}/terms` },
+  robots: { index: true, follow: true },
 };
 
 export default function TermsPage() {

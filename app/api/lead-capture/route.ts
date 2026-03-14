@@ -47,13 +47,13 @@ export async function POST(request: NextRequest) {
     const messages: ChatHistoryItem[] = Array.isArray(body.messages)
       ? body.messages
           .filter(
-            (item): item is { role: 'user' | 'assistant'; content: string } =>
+            (item: Record<string, unknown>): item is { role: 'user' | 'assistant'; content: string } =>
               Boolean(item) &&
               (item.role === 'user' || item.role === 'assistant') &&
               typeof item.content === 'string' &&
-              item.content.trim().length > 0
+              (item.content as string).trim().length > 0
           )
-          .map((item) => ({
+          .map((item: { role: 'user' | 'assistant'; content: string }) => ({
             role: item.role,
             content: item.content.trim(),
           }))

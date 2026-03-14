@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { financingPlan, getProductBySlug, productCatalog } from '@/lib/product-catalog';
 import { PRODUCT_GUIDES } from '@/lib/sales';
+import { BASE_URL, generateBreadcrumbJsonLd, generateProductJsonLd } from '@/lib/seo';
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -23,8 +24,30 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   }
 
   return {
-    title: `${product.fullName} 产品详情`,
-    description: `${product.fullName}${product.description} 参考价格${product.price}，${product.priceNote}。`,
+    title: `${product.fullName} — ${product.tagline}`,
+    description: `${product.fullName}：${product.description} ${product.longDescription} 参考价格${product.price}，${product.priceNote}。`,
+    alternates: {
+      canonical: `${BASE_URL}${product.href}`,
+    },
+    openGraph: {
+      title: `${product.fullName} — ${product.tagline} | 微算科技`,
+      description: product.longDescription,
+      url: `${BASE_URL}${product.href}`,
+      images: [
+        {
+          url: product.image,
+          width: 1200,
+          height: 630,
+          alt: product.fullName,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.fullName} | 微算科技 WeCalc`,
+      description: product.tagline,
+      images: [product.image],
+    },
   };
 }
 
@@ -39,8 +62,23 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const relatedProducts = productCatalog.filter((item) => item.slug !== product.slug);
   const guide = PRODUCT_GUIDES[product.slug];
 
+  const productJsonLd = generateProductJsonLd(product);
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: '首页', url: BASE_URL },
+    { name: '产品中心', url: `${BASE_URL}/products` },
+    { name: product.fullName, url: `${BASE_URL}${product.href}` },
+  ]);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <section className="relative pt-32 pb-20 overflow-hidden bg-brand-950 text-white">
         <div className={`absolute inset-0 bg-gradient-to-br ${product.color} opacity-20`} />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_42%)]" />

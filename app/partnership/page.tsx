@@ -1,10 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PartnershipApplicationForm from '@/components/sales/PartnershipApplicationForm';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '事业合伙人',
-  description: '共享微算事业合伙人计划：零加盟费进入AI产业，免费获得100台微算设备支撑，共享上市收益。',
+  title: '事业合伙人 — 零加盟费·免费100台设备·共享上市收益',
+  description:
+    '共享微算事业合伙人计划：零加盟费进入AI算力产业，免费获得100台微算设备(价值超亿元)，获得拟上市公司股权激励，区域独家运营。技术培训+持续技术支持。',
+  alternates: { canonical: `${BASE_URL}/partnership` },
+  openGraph: {
+    title: '事业合伙人计划 | 微算科技',
+    description: '零加盟费、免费100台设备、共享上市收益',
+    url: `${BASE_URL}/partnership`,
+  },
 };
 
 const benefits = [

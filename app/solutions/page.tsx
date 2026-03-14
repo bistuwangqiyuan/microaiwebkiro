@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '解决方案',
-  description: '微算科技行业解决方案：覆盖金融、医疗、教育、制造、政务等行业，提供数据不出域的本地化AI算力支持。',
+  title: '行业解决方案 — 金融·医疗·教育·制造·政务',
+  description:
+    '微算科技行业解决方案：覆盖金融风控、医疗影像、教育实训、智能制造、政务安全等行业，提供数据不出域的本地化AI算力支持。TCO降低40%+，48-72小时快速部署。',
+  alternates: { canonical: `${BASE_URL}/solutions` },
+  openGraph: {
+    title: '行业解决方案 | 微算科技',
+    description: '金融、医疗、教育、制造、政务等行业数据不出域的本地化AI算力支持',
+    url: `${BASE_URL}/solutions`,
+  },
 };
 
 const solutions = [

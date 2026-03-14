@@ -2,10 +2,18 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { coreProductFeatures, financingPlan, productCatalog, productComparison } from '@/lib/product-catalog';
 import { PRODUCT_GUIDES } from '@/lib/sales';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '产品中心',
-  description: '微算科技产品矩阵总览，覆盖微算-B、微算-P、微算-E 三大产品，从 1P 入门算力到企业级异构集群均可按需交付。',
+  title: '产品中心 — 微算-B/P/E 微型算力中心全产品线',
+  description:
+    '微算科技产品矩阵总览：微算-B基础版(9.8万元/2000元月)、微算-P专业版(200-500万元)、微算-E企业版(500万+)。覆盖1P到50+ PFLOPS，从教学实训到大规模模型训练全场景。',
+  alternates: { canonical: `${BASE_URL}/products` },
+  openGraph: {
+    title: '产品中心 — 微算科技全产品线',
+    description: '从1P入门算力到50+ PFLOPS旗舰级定制方案，微算-B/P/E覆盖全场景需求',
+    url: `${BASE_URL}/products`,
+  },
 };
 
 export default function ProductsPage() {

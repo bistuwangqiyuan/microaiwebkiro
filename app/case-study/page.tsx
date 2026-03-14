@@ -1,10 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BASE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '客户案例 — 微算科技',
+  title: '客户案例 — 6+行业验证·TCO降低40-62%',
   description:
-    '微算在教育、制造、医疗、金融、自动驾驶等行业的真实落地案例，展示从 48 小时部署到 TCO 降低 60% 的全场景降本增效成果。',
+    '微算科技在教育、制造、医疗、金融、自动驾驶等6+行业的真实落地案例。48-72小时快速部署，TCO综合降低40-62%，资源利用率达85%。华为120万元同成本对标测试全面超越。',
+  alternates: { canonical: `${BASE_URL}/case-study` },
+  openGraph: {
+    title: '客户案例 | 微算科技',
+    description: '6+行业验证，TCO降低40-62%，48-72小时部署上线',
+    url: `${BASE_URL}/case-study`,
+  },
 };
 
 const heroMetrics = [

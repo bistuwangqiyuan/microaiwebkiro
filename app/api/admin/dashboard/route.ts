@@ -22,7 +22,7 @@ export async function GET() {
     let cashflow = { inflowToday: 0, netCashflowToday: 0, bDealsToday: 0 };
 
     if (sql) {
-      const [runStats, cashStats] = await Promise.all([
+      const [runStatsRaw, cashStatsRaw] = await Promise.all([
         sql`
           select
             count(*)::int as total,
@@ -32,7 +32,7 @@ export async function GET() {
                and created_at >= current_date) as openclaw_count
           from agent_runs
           where started_at >= current_date
-        `.catch(() => []),
+        `.catch(() => [] as Record<string, unknown>[]),
         sql`
           select
             coalesce(sum(inflow_amount), 0) as inflow,
@@ -40,10 +40,11 @@ export async function GET() {
             coalesce(sum(b_sales_count), 0)::int as b_deals
           from cashflow_snapshots
           where snapshot_at >= current_date
-        `.catch(() => []),
+        `.catch(() => [] as Record<string, unknown>[]),
       ]);
 
-      const runRow = runStats[0];
+      const runRows = Array.isArray(runStatsRaw) ? runStatsRaw : [];
+      const runRow = runRows[0] as Record<string, unknown> | undefined;
       if (runRow) {
         const total = toNum(runRow.total);
         const successCount = toNum(runRow.success_count);
@@ -54,7 +55,8 @@ export async function GET() {
         };
       }
 
-      const cashRow = cashStats[0];
+      const cashRows = Array.isArray(cashStatsRaw) ? cashStatsRaw : [];
+      const cashRow = cashRows[0] as Record<string, unknown> | undefined;
       if (cashRow) {
         cashflow = {
           inflowToday: toNum(cashRow.inflow),
