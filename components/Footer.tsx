@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-const footerLinks = {
+const zhFooterLinks = {
   products: {
     title: '产品中心',
     links: [
@@ -42,22 +42,68 @@ const footerLinks = {
   },
 };
 
-export default function Footer() {
+const enFooterLinks = {
+  products: {
+    title: 'Products',
+    links: [
+      { name: 'Product Selection', href: '/en/selection' },
+      { name: 'WeCalc-B Basic', href: '/en/products/wecalc-b' },
+      { name: 'WeCalc-P Professional', href: '/en/products/wecalc-p' },
+      { name: 'WeCalc-E Enterprise', href: '/en/products/wecalc-e' },
+      { name: 'Compare Products', href: '/en/products#compare' },
+    ],
+  },
+  technology: {
+    title: 'Technology',
+    links: [
+      { name: 'Disaggregated Architecture', href: '/en/technology#separation' },
+      { name: 'EBOF All-Flash Storage', href: '/en/technology#ebof' },
+      { name: 'Technical Advantages', href: '/en/technology#advantages' },
+    ],
+  },
+  company: {
+    title: 'Company',
+    links: [
+      { name: 'About Us', href: '/en/about' },
+      { name: 'Solutions', href: '/en/solutions' },
+      { name: 'Case Studies', href: '/en/case-study' },
+      { name: 'News', href: '/en/news' },
+      { name: 'Partnership', href: '/en/partnership' },
+    ],
+  },
+  support: {
+    title: 'Support',
+    links: [
+      { name: 'Get Assessment', href: '/en/contact?intent=tco' },
+      { name: 'Leasing Plans', href: '/en/contact?intent=leasing&product=wecalc-b' },
+      { name: 'Contact Us', href: '/en/contact' },
+      { name: 'Privacy Policy', href: '/en/privacy' },
+      { name: 'Terms of Service', href: '/en/terms' },
+    ],
+  },
+};
+
+export default function Footer({ locale = 'zh' }: { locale?: 'zh' | 'en' }) {
+  const isEn = locale === 'en';
+  const footerLinks = isEn ? enFooterLinks : zhFooterLinks;
+  const homeHref = isEn ? '/en' : '/';
+
   return (
     <footer className="bg-gray-950 text-gray-300" role="contentinfo">
       <div className="section-container">
         <div className="pt-16 pb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-10">
-            {/* Brand + Contact */}
             <div className="col-span-2 mb-4 lg:mb-0">
-              <Link href="/" className="flex items-center gap-2.5 group mb-5">
+              <Link href={homeHref} className="flex items-center gap-2.5 group mb-5">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center">
                   <span className="text-white font-black text-sm">W</span>
                 </div>
-                <span className="text-white text-lg font-bold">微算科技</span>
+                <span className="text-white text-lg font-bold">{isEn ? 'WeCalc' : '微算科技'}</span>
               </Link>
               <p className="text-sm text-gray-400 leading-relaxed max-w-xs mb-5">
-                数据不出域的微型算力中心。数据全部存放在您自己的设备中，更安全、更放心。
+                {isEn
+                  ? 'On-premise micro computing centers. Your data stays on YOUR devices — safer and more secure.'
+                  : '数据不出域的微型算力中心。数据全部存放在您自己的设备中，更安全、更放心。'}
               </p>
 
               <div className="space-y-2.5 mb-5">
@@ -75,12 +121,11 @@ export default function Footer() {
                 </a>
               </div>
 
-              {/* WeChat QR */}
               <div className="bg-white/5 rounded-xl p-3 inline-block">
-                <p className="text-xs text-gray-400 mb-2 text-center">微信联系</p>
+                <p className="text-xs text-gray-400 mb-2 text-center">{isEn ? 'WeChat' : '微信联系'}</p>
                 <Image
                   src="/image/微信联系二维码.png"
-                  alt="微算科技微信联系二维码"
+                  alt={isEn ? 'WeCalc WeChat QR Code' : '微算科技微信联系二维码'}
                   width={100}
                   height={100}
                   className="rounded-lg"
@@ -108,13 +153,12 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Partners */}
         <div className="border-t border-white/10 py-6">
-          <p className="text-xs text-gray-500 mb-4 text-center">合作伙伴</p>
+          <p className="text-xs text-gray-500 mb-4 text-center">{isEn ? 'Partners' : '合作伙伴'}</p>
           <div className="flex flex-wrap items-center justify-center gap-8">
-            <Image src="/image/华为logo.png" alt="华为" width={80} height={32} className="opacity-50 hover:opacity-80 transition-opacity h-8 w-auto" />
-            <Image src="/image/华为鲲鹏logo.png" alt="华为鲲鹏" width={80} height={32} className="opacity-50 hover:opacity-80 transition-opacity h-8 w-auto" />
-            <Image src="/image/北京大学logo.jpg" alt="北京信息科技大学" width={80} height={32} className="opacity-50 hover:opacity-80 transition-opacity h-8 w-auto" />
+            <Image src="/image/华为logo.png" alt="Huawei" width={80} height={32} className="opacity-50 hover:opacity-80 transition-opacity h-8 w-auto" />
+            <Image src="/image/华为鲲鹏logo.png" alt="Huawei Kunpeng" width={80} height={32} className="opacity-50 hover:opacity-80 transition-opacity h-8 w-auto" />
+            <Image src="/image/北京大学logo.jpg" alt="BISTU" width={80} height={32} className="opacity-50 hover:opacity-80 transition-opacity h-8 w-auto" />
           </div>
         </div>
 
@@ -123,11 +167,11 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} 微算科技 WeCalc Technology. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-              隐私政策
+            <Link href={isEn ? '/en/privacy' : '/privacy'} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+              {isEn ? 'Privacy Policy' : '隐私政策'}
             </Link>
-            <Link href="/terms" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-              服务条款
+            <Link href={isEn ? '/en/terms' : '/terms'} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+              {isEn ? 'Terms of Service' : '服务条款'}
             </Link>
           </div>
         </div>

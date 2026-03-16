@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const navItems = [
+const zhNavItems = [
   { name: '首页', href: '/' },
   { name: '智能选型', href: '/selection' },
   { name: '产品中心', href: '/products' },
@@ -17,10 +17,35 @@ const navItems = [
   { name: '联系我们', href: '/contact' },
 ];
 
+const enNavItems = [
+  { name: 'Home', href: '/en' },
+  { name: 'Selection', href: '/en/selection' },
+  { name: 'Products', href: '/en/products' },
+  { name: 'Technology', href: '/en/technology' },
+  { name: 'Solutions', href: '/en/solutions' },
+  { name: 'Case Studies', href: '/en/case-study' },
+  { name: 'Partnership', href: '/en/partnership' },
+  { name: 'About', href: '/en/about' },
+  { name: 'News', href: '/en/news' },
+  { name: 'Contact', href: '/en/contact' },
+];
+
+function getLocaleSwitch(pathname: string): { href: string; label: string } {
+  if (pathname.startsWith('/en')) {
+    const zhPath = pathname.replace(/^\/en/, '') || '/';
+    return { href: zhPath, label: '中文' };
+  }
+  return { href: `/en${pathname === '/' ? '' : pathname}`, label: 'EN' };
+}
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const isEn = pathname.startsWith('/en');
+  const navItems = isEn ? enNavItems : zhNavItems;
+  const localeSwitch = getLocaleSwitch(pathname);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -32,24 +57,26 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-  const isHomePage = pathname === '/';
+  const isHomePage = pathname === '/' || pathname === '/en';
   const headerBg = scrolled || !isHomePage
     ? 'bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-sm'
     : 'bg-transparent';
   const textColor = scrolled || !isHomePage ? 'text-gray-800' : 'text-white';
   const logoColor = scrolled || !isHomePage ? 'text-brand-600' : 'text-white';
+  const homeHref = isEn ? '/en' : '/';
+  const contactHref = isEn ? '/en/contact?intent=tco' : '/contact?intent=tco';
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${headerBg}`}>
-      <nav className="section-container" aria-label="主导航">
+      <nav className="section-container" aria-label={isEn ? 'Main navigation' : '主导航'}>
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <Link href="/" className="flex items-center gap-2.5 group" aria-label="微算科技首页">
+          <Link href={homeHref} className="flex items-center gap-2.5 group" aria-label={isEn ? 'WeCalc Home' : '微算科技首页'}>
             <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center 
                             shadow-lg shadow-brand-500/25 group-hover:shadow-brand-500/40 transition-shadow duration-300`}>
               <span className="text-white font-black text-sm">W</span>
             </div>
             <span className={`text-xl font-bold tracking-tight transition-colors duration-300 ${logoColor}`}>
-              微算科技
+              {isEn ? 'WeCalc' : '微算科技'}
             </span>
           </Link>
 
@@ -73,21 +100,31 @@ export default function Header() {
 
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="/contact?intent=tco"
+              href={localeSwitch.href}
+              className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300 ${
+                scrolled || !isHomePage
+                  ? 'text-gray-600 border border-gray-200 hover:bg-gray-50'
+                  : 'text-white/80 border border-white/20 hover:bg-white/10'
+              }`}
+            >
+              {localeSwitch.label}
+            </Link>
+            <Link
+              href={contactHref}
               className={`inline-flex items-center rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 ${
                 scrolled || !isHomePage
                   ? 'bg-brand-600 text-white hover:bg-brand-700'
                   : 'border border-white/20 bg-white/10 text-white hover:bg-white/15'
               }`}
             >
-              申请测算
+              {isEn ? 'Get a Quote' : '申请测算'}
             </Link>
           </div>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`lg:hidden p-2 rounded-lg transition-colors ${textColor}`}
-            aria-label={mobileMenuOpen ? '关闭菜单' : '打开菜单'}
+            aria-label={mobileMenuOpen ? (isEn ? 'Close menu' : '关闭菜单') : (isEn ? 'Open menu' : '打开菜单')}
             aria-expanded={mobileMenuOpen}
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -118,10 +155,16 @@ export default function Header() {
               </Link>
             ))}
             <Link
-              href="/contact?intent=tco"
+              href={localeSwitch.href}
+              className="block px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50"
+            >
+              {isEn ? '切换到中文 (Chinese)' : 'Switch to English'}
+            </Link>
+            <Link
+              href={contactHref}
               className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
             >
-              申请专属测算
+              {isEn ? 'Request Custom Assessment' : '申请专属测算'}
             </Link>
           </div>
         </div>

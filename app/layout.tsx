@@ -89,6 +89,7 @@ export const metadata: Metadata = {
     canonical: BASE_URL,
     languages: {
       'zh-CN': BASE_URL,
+      en: `${BASE_URL}/en`,
     },
   },
   category: 'technology',
