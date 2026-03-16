@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 const zhFooterLinks = {
   products: {
@@ -83,8 +86,9 @@ const enFooterLinks = {
   },
 };
 
-export default function Footer({ locale = 'zh' }: { locale?: 'zh' | 'en' }) {
-  const isEn = locale === 'en';
+export default function Footer() {
+  const pathname = usePathname();
+  const isEn = pathname?.startsWith('/en') ?? false;
   const footerLinks = isEn ? enFooterLinks : zhFooterLinks;
   const homeHref = isEn ? '/en' : '/';
 
