@@ -542,6 +542,27 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Legal Links */}
+      <section className="py-8 bg-gray-50 border-t border-gray-200">
+        <div className="section-container">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm">
+            <Link
+              href="/privacy"
+              className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-4"
+            >
+              隐私政策
+            </Link>
+            <span className="hidden sm:inline text-gray-300">|</span>
+            <Link
+              href="/terms"
+              className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-4"
+            >
+              服务条款
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

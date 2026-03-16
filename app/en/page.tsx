@@ -990,18 +990,39 @@ export default function EnHomePage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/contact"
+                href="/en/contact"
                 className="btn-primary text-base px-10 py-4"
               >
                 Free Consultation
               </Link>
               <Link
-                href="/partnership"
+                href="/en/partnership"
                 className="btn-outline text-base px-10 py-4"
               >
                 Become a Partner
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Legal Links */}
+      <section className="py-8 bg-gray-50 border-t border-gray-200">
+        <div className="section-container">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm">
+            <Link
+              href="/en/privacy"
+              className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-4"
+            >
+              Privacy Policy
+            </Link>
+            <span className="hidden sm:inline text-gray-300">|</span>
+            <Link
+              href="/en/terms"
+              className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-4"
+            >
+              Terms of Service
+            </Link>
           </div>
         </div>
       </section>
